@@ -1,0 +1,7 @@
+EXPORTS
+miniMsgBox
+miniPrint
+globalVal  ;DATA
+?add@COperator@@QAEHHH@Z	;COperator add函数
+??0COperator@@QAE@XZ		;COperator构造函数
+??1COperator@@UAE@XZ		;COperator析构函数
