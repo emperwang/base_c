@@ -1,0 +1,18 @@
+# 这里相当于是定一个cmake的 module,可用于调用
+FIND_PATH(HELLO_INCLUDE_DIR hello.h ${PROJECT_SOURCE_DIR}/lib  /usr/local/include/hello)
+#FIND_LIBRARY(HELLO_LIBRARY NAMES hello PATH ${PROJECT_SOURCE_DIR}/build/hello   /usr/local/hello)
+FIND_LIBRARY(HELLO_LIBRARY NAMES hello PATH ${PROJECT_SOURCE_DIR}/build/lib)
+if (HELLO_INCLUDE_DIR AND HELLO_LIBRARY)
+set(HELLO_FOUND TRUE)
+endif (HELLO_INCLUDE_DIR AND HELLO_LIBRARY)
+
+if (HELLO_FOUND)
+    if (NOT HELLO_FIND_QUIETLY)
+        MESSAGE("Found Hello: " ${HELLO_LIBRARY})
+    endif (NOT HELLO_FIND_QUIETLY)
+else(HELLO_FOUND)
+    if (HELLO_FIND_REQUIRED)
+        MESSAGE(FATAL_ERROR "Could not find hello library")
+    endif (HELLO_FIND_REQUIRED)
+endif (HELLO_FOUND)
+
