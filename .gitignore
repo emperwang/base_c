@@ -68,9 +68,9 @@ dkms.conf
 ipch
 #*.sln
 *.vs
-#*.vcxproj
-#*.filters
-#*.opensdf
+*.vcxproj
+*.filters
+*.opensdf
 bin
 temp
 Debug
