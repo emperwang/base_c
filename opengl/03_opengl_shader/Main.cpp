@@ -1,7 +1,8 @@
-#include "Shader.h"
+#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <stb_image.h>
 #include <iostream>
+#include "Shader.h"
 
 const char* fragment_shader_source2 = "#version 330 core \n"
 "out vec4 FragColor; \n"
@@ -47,11 +48,13 @@ void main() {
 
 	Shader shader("shader.vs", "shader.fs");
 
+
 	float vertices[] = {
-		0.5f, 0.5f, 0.0f,		// top right
-		0.5f, -0.5f, 0.0f,		// bottom right
-		-0.5f,-0.5f, 0.0f,		// bottom left
-		-0.5f, 0.5f, 0.0f		// top left
+		// position			colors		       texture coords
+		0.5f, 0.5f, 0.0f,	1.0f, 0.0f, 0.0f,    1.0f, 1.0f,	// top right
+		0.5f, -0.5f, 0.0f,	0.0f, 1.0f, 0.0f,    1.0f, 0.0f,	// bottom right
+		-0.5f,-0.5f, 0.0f,	0.0f, 0.0f, 1.0f,    0.0f, 0.0f,	// bottom left
+		-0.5f, 0.5f, 0.0f,	1.0f, 1.0f, 0.0f,    0.0f, 1.0f	// top left
 	};
 
 	float triangles[] = {
@@ -75,23 +78,47 @@ void main() {
 	glBindVertexArray(VAO);
 
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(triangles), triangles, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	//glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
 
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3* sizeof(float)));
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3* sizeof(float)));
 	glEnableVertexAttribArray(1);
 
-	// unbind
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindVertexArray(0);
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+	glEnableVertexAttribArray(2);
 
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+	unsigned int texture;
+	glGenTextures(1, &texture);
+	glBindTexture(GL_TEXTURE_2D, texture);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	std::string img_path = "container.jpg";
+	int img_width, img_height, img_nr_channels;
+	
+	unsigned char* img_data = stbi_load("container.jpg", &img_width, &img_height, &img_nr_channels, 0);
+	if (img_data) {
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, img_width, img_height, 0, GL_RGB, GL_UNSIGNED_BYTE, img_data);
+		glGenerateMipmap(GL_TEXTURE_2D);
+	}
+	else {
+		std::cout << "Failed to load image." << std::endl;
+	}
+	stbi_image_free(img_data);
+	// unbind
+	//glBindBuffer(GL_ARRAY_BUFFER, 0);
+	//glBindVertexArray(0);
+
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
 
 	while (!glfwWindowShouldClose(window)) {
@@ -108,9 +135,11 @@ void main() {
 		//glUniform4f(out_color_location, 0.0f, green_value,0.0f,1.0f);
 		
 		shader.use();
+		
+		glBindTexture(GL_TEXTURE_2D, texture);
 		glBindVertexArray(VAO);
-		glDrawArrays(GL_TRIANGLES, 0, 3);
-		//glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		//glDrawArrays(GL_TRIANGLES, 0, 3);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
