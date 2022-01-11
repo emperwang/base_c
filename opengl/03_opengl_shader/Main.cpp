@@ -104,7 +104,9 @@ void main() {
 	std::string img_path = "container.jpg";
 	int img_width, img_height, img_nr_channels;
 	
-	unsigned char* img_data = stbi_load("container.jpg", &img_width, &img_height, &img_nr_channels, 0);
+	stbi_set_flip_vertically_on_load(true);
+
+	unsigned char* img_data = stbi_load(img_path.c_str(), &img_width, &img_height, &img_nr_channels, 0);
 	if (img_data) {
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, img_width, img_height, 0, GL_RGB, GL_UNSIGNED_BYTE, img_data);
 		glGenerateMipmap(GL_TEXTURE_2D);
@@ -117,9 +119,32 @@ void main() {
 	//glBindBuffer(GL_ARRAY_BUFFER, 0);
 	//glBindVertexArray(0);
 
+	unsigned int texture2;
+	glGenTextures(1, &texture2);
+	glBindTexture(GL_TEXTURE_2D, texture2);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	std::string img2_path = "awesomeface.png";
+	img_data = stbi_load(img2_path.c_str(), &img_width, &img_height, &img_nr_channels, 0);
+	if (img_data) {
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, img_width, img_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, img_data);
+		glGenerateMipmap(GL_TEXTURE_2D);
+	}
+	else {
+		std::cout << "Failed to load image2." << std::endl;
+	}
+
+	stbi_image_free(img_data);
+
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
+	shader.use();
+	glUniform1i(glGetUniformLocation(shader.ID, "texture1"), 0);
+	shader.setInt("texture2", 1);
 
 	while (!glfwWindowShouldClose(window)) {
 		process_input(window);
@@ -134,9 +159,12 @@ void main() {
 		//glUseProgram(shader_program);
 		//glUniform4f(out_color_location, 0.0f, green_value,0.0f,1.0f);
 		
-		shader.use();
-		
+		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, texture);
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, texture2);
+
+		shader.use();
 		glBindVertexArray(VAO);
 		//glDrawArrays(GL_TRIANGLES, 0, 3);
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
