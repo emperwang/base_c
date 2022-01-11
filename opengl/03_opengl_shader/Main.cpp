@@ -1,8 +1,7 @@
-#include <glad/glad.h>
+#include "Shader.h"
 #include <GLFW/glfw3.h>
 #include <stb_image.h>
 #include <iostream>
-
 
 const char *vertex_shader_source = "#version 330 core \n"
 "layout(location = 0) in vec3 aPos;		\n"
@@ -61,50 +60,7 @@ void main() {
 	glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nr_attributes);
 	std::cout << "Maximun nr of vertex attributes supported: " << nr_attributes << std::endl;
 
-	int success;
-	char info_log[512] = { 0 };
-
-	unsigned int vertex_shader;
-	vertex_shader = glCreateShader(GL_VERTEX_SHADER);
-	glShaderSource(vertex_shader, 1, &vertex_shader_source, NULL);
-	glCompileShader(vertex_shader);
-
-	glGetShaderiv(vertex_shader, GL_COMPILE_STATUS, &success);
-	if (!success) {
-		glGetShaderInfoLog(vertex_shader, 512, NULL, info_log);
-		std::cout << "Error: Shader:Vertex:compile failed.\n" << info_log << std::endl;
-		return;
-	}
-	
-	unsigned int fragment_shader;
-	fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(fragment_shader, 1, &fragment_shader_source, NULL);
-	glCompileShader(fragment_shader);
-	glGetShaderiv(fragment_shader, GL_COMPILE_STATUS, &success);
-
-	if (!success) {
-		glGetShaderInfoLog(fragment_shader, 512, NULL, info_log);
-		std::cout << "Error: Shader:Fragment:compile failed.\n" << info_log << std::endl;
-		return;
-	}
-
-	unsigned int shader_program;
-	shader_program = glCreateProgram();
-
-	glAttachShader(shader_program, vertex_shader);
-	glAttachShader(shader_program, fragment_shader);
-	glLinkProgram(shader_program);
-
-	glGetProgramiv(shader_program, GL_LINK_STATUS, &success);
-	if(!success) {
-		glGetProgramInfoLog(shader_program, 512, NULL, info_log);
-		std::cout << "Error: Shader:Program:Link failed.\n" << info_log << std::endl;
-		return;
-	}
-
-	glDeleteShader(vertex_shader);
-	glDeleteShader(fragment_shader);
-
+	Shader shader("shader.vs", "shader.fs");
 
 	float vertices[] = {
 		0.5f, 0.5f, 0.0f,		// top right
@@ -163,8 +119,10 @@ void main() {
 		float time_value = glfwGetTime();
 		float green_value = (sin(time_value) / 2.0f) + 0.5f;
 		//int out_color_location = glGetUniformLocation(shader_program, "our_color");
-		glUseProgram(shader_program);
+		//glUseProgram(shader_program);
 		//glUniform4f(out_color_location, 0.0f, green_value,0.0f,1.0f);
+		
+		shader.use();
 		glBindVertexArray(VAO);
 		glDrawArrays(GL_TRIANGLES, 0, 3);
 		//glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
@@ -177,7 +135,7 @@ void main() {
 	glDeleteVertexArrays(1, &VAO);
 	glDeleteBuffers(1, &VBO);
 	glDeleteBuffers(1, &EBO);
-	glDeleteProgram(shader_program);
+	//glDeleteProgram(shader_program);
 
 	glfwTerminate();
 
