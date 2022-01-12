@@ -46,7 +46,7 @@ void main() {
 	glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nr_attributes);
 	std::cout << "Maximun nr of vertex attributes supported: " << nr_attributes << std::endl;
 
-	Shader shader("shader.vs", "shader.fs");
+	Shader shader("Shader_transform.vs", "shader.fs");
 
 
 	float vertices[] = {
@@ -146,6 +146,13 @@ void main() {
 	// set texture 
 	glUniform1i(glGetUniformLocation(shader.ID, "texture1"), 0);
 	shader.setInt("texture2", 1);
+
+	glm::mat4 trans = glm::mat4(1.0f);
+	trans = glm::rotate(trans, glm::radians(90.0f), glm::vec3(0.0, 0.0, 1.0f));
+	trans = glm::scale(trans, glm::vec3(0.5, 0.5, 0.5));
+
+	unsigned int transform_location = glGetUniformLocation(shader.ID, "transform");
+	glUniformMatrix4fv(transform_location, 1, GL_FALSE, glm::value_ptr(trans));
 
 	while (!glfwWindowShouldClose(window)) {
 		process_input(window);
