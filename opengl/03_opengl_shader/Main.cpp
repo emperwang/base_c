@@ -143,6 +143,7 @@ void main() {
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
 	shader.use();
+	// set texture 
 	glUniform1i(glGetUniformLocation(shader.ID, "texture1"), 0);
 	shader.setInt("texture2", 1);
 
@@ -153,7 +154,7 @@ void main() {
 		glClear(GL_COLOR_BUFFER_BIT);
 		
 
-		float time_value = glfwGetTime();
+		float time_value = static_cast<float>(glfwGetTime());
 		float green_value = (sin(time_value) / 2.0f) + 0.5f;
 		//int out_color_location = glGetUniformLocation(shader_program, "our_color");
 		//glUseProgram(shader_program);
