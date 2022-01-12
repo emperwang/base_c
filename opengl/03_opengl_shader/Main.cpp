@@ -46,7 +46,7 @@ void main() {
 	glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nr_attributes);
 	std::cout << "Maximun nr of vertex attributes supported: " << nr_attributes << std::endl;
 
-	Shader shader("Shader_transform.vs", "shader.fs");
+	Shader shader("shader_3d.vs", "shader.fs");
 
 
 	float vertices[] = {
@@ -165,22 +165,37 @@ void main() {
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, texture2);
 
-		glm::mat4 trans = glm::mat4(1.0f);
+		/*glm::mat4 trans = glm::mat4(1.0f);
 		trans = glm::translate(trans, glm::vec3(0.5f, -0.5f, 0.0f));
 		trans = glm::rotate(trans,static_cast<float>(glfwGetTime()), glm::vec3(0.0, 0.0, 1.0f));
 
 		unsigned int transform_location = glGetUniformLocation(shader.ID, "transform");
-		glUniformMatrix4fv(transform_location, 1, GL_FALSE, glm::value_ptr(trans));
+		glUniformMatrix4fv(transform_location, 1, GL_FALSE, glm::value_ptr(trans));*/
+
+		glm::mat4 model = glm::mat4(1.0f);
+		model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+		
+		glm::mat4 view = glm::mat4(1.0f);
+		view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+
+		glm::mat4 projection;
+		projection = glm::perspective(glm::radians(45.0f), static_cast<float>(800.0f / 600.0f), 0.1f, 100.0f);
+
+		int model_location = glGetUniformLocation(shader.ID, "model");
+		glUniformMatrix4fv(model_location, 1, GL_FALSE, glm::value_ptr(model));
+
+		shader.setMat4("view", view);
+		shader.setMat4("projection", projection);
 
 		shader.use();
 		glBindVertexArray(VAO);
 		//glDrawArrays(GL_TRIANGLES, 0, 3);
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
-		glm::mat4 trans2 = glm::mat4(1.0f);
+		/*glm::mat4 trans2 = glm::mat4(1.0f);
 		trans2 = glm::translate(trans2, glm::vec3(-0.5f, 0.5f, 0.0f));
 		shader.setMat4("transform", trans2);
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);*/
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
