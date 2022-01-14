@@ -67,7 +67,7 @@ dkms.conf
 *.sdf
 ipch
 #*.sln
-*.vs
+.vs
 *.vcxproj
 *.filters
 *.opensdf
