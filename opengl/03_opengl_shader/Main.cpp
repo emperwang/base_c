@@ -4,13 +4,30 @@
 #include <iostream>
 #include "Shader.h"
 
+#define WIDTH 800
+#define HEIGHT 600
+
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 
 void process_input(GLFWwindow *window);
+void mouse_callback(GLFWwindow* windows, double xpos, double ypos);
+void scroll_callback(GLFWwindow* windows, double xoffset, double yoffset);
 
+// camera
 glm::vec3 camera_pos = glm::vec3(0.0f, 0.0f, 3.0f);
 glm::vec3 camera_front = glm::vec3(0.0f, 0.0f, -1.0f);
 glm::vec3 camera_up = glm::vec3(0.0f, 1.0f, 0.0f);
+
+float delta_time = 0.0f;
+float last_time = 0.0f;
+
+// mouse
+bool first_mouse = true;
+float last_x = WIDTH / 2;
+float last_y = HEIGHT / 2;
+float pitch = 0.0f;
+float yaw = -90.0f;
+float fov = 45.0f;
 
 void main() {
 
@@ -22,7 +39,7 @@ void main() {
 	glfwWindowHin(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #endif // _MAC_
 
-	GLFWwindow* window = glfwCreateWindow(800, 600, "OpenGL", NULL, NULL);
+	GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "OpenGL", NULL, NULL);
 	if (window == NULL) {
 		std::cout << "Failed to create GLFW window" << std::endl;
 		glfwTerminate();
@@ -30,6 +47,9 @@ void main() {
 	}
 	glfwMakeContextCurrent(window);
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+	// mouse callback
+	glfwSetCursorPosCallback(window, mouse_callback);
+	glfwSetScrollCallback(window, scroll_callback);
 
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
 		std::cout << "Failed to initialize GLAD" << std::endl;
@@ -193,10 +213,15 @@ void main() {
 	}
 
 	stbi_image_free(img_data);
+	
+	// set mouse mode
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
+	
+	
 	shader.use();
 	// set texture 
 	glUniform1i(glGetUniformLocation(shader.ID, "texture1"), 0);
@@ -205,6 +230,10 @@ void main() {
 	glEnable(GL_DEPTH_TEST);	// default disable
 
 	while (!glfwWindowShouldClose(window)) {
+		float current_frame = static_cast<float>(glfwGetTime());
+		delta_time = current_frame - last_time;
+		last_time = current_frame;
+
 		process_input(window);
 
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
@@ -248,7 +277,7 @@ void main() {
 
 
 		glm::mat4 projection;
-		projection = glm::perspective(glm::radians(45.0f), static_cast<float>(800.0f / 600.0f), 0.1f, 100.0f);
+		projection = glm::perspective(glm::radians(fov), static_cast<float>(800.0f / 600.0f), 0.1f, 100.0f);
 
 		shader.setMat4("view", view);
 		shader.setMat4("projection", projection);
@@ -297,7 +326,8 @@ void process_input(GLFWwindow *window) {
 		glfwSetWindowShouldClose(window, true);
 	}
 
-	const float camera_speed = 0.001f;
+	//const float camera_speed = 0.001f;
+	const float camera_speed = static_cast<float>(2.5 * delta_time);
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
 		camera_pos += camera_speed * camera_front;
 	}
@@ -315,3 +345,51 @@ void process_input(GLFWwindow *window) {
 	}
 
 }
+
+void mouse_callback(GLFWwindow* windows, double xpos, double ypos) {
+	
+	if (first_mouse) {
+		last_x = static_cast<float>(xpos);
+		last_y = static_cast<float>(ypos);
+		first_mouse = false;
+	}
+
+	float xoffset = static_cast<float>(xpos - last_x);
+	float yoffset = static_cast<float>(last_y - ypos);	// reversed since y-coordinates go from bottom to top
+	last_x = static_cast<float>(xpos);
+	last_y = static_cast<float>(ypos);
+
+	float sensitivity = 0.1f;
+	xoffset *= sensitivity;
+	yoffset *= sensitivity;
+
+	yaw += xoffset;
+	pitch += yoffset;
+
+	if (pitch > 89.0f) {
+		pitch = 89.0f;
+	}
+
+	if (pitch < -89.0f) {
+		pitch = 89.0f;
+	}
+
+	glm::vec3 front;
+	front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+	front.y = sin(glm::radians(pitch));
+	front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+
+	camera_front = glm::normalize(front);
+}
+
+void scroll_callback(GLFWwindow* windows, double xoffset, double yoffset) {
+	fov -= (float)yoffset;
+
+	if (fov < 1.0f) {
+		fov = 1.0f;
+	}
+	if (fov > 45.0f) {
+		fov = 45.0f;
+	}
+}
+
