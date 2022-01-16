@@ -10,7 +10,7 @@ ModelOpenglWidget::ModelOpenglWidget(QWidget *parent) : QOpenGLWidget(parent)
     time.start();
     connect(&timer, &QTimer::timeout, this, &ModelOpenglWidget::onTimeout);
     ReadStlFile readStl;
-    readStl.ReadResourceFile(":/stl/20201013_ARR_BR206_SERIE_ECE_V1_F2_RE.STL");
+    readStl.ReadResourceFile(":/stl/w0w285090.stl");
     std::vector<QVector3D> tmpPointList = readStl.getPointList();
     std::vector<QVector3D> tmpVectorList = readStl.getVectorList();
     QString str = QString("point size: %1, vector size: %2").arg(tmpPointList.size()).arg(tmpVectorList.size());
@@ -48,6 +48,7 @@ void ModelOpenglWidget::initializeGL()
     GLint attributes;
     glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &attributes);
     qDebug() << "attributes: " << attributes;
+    glPointSize(1.0f);
 
     bool success = true;
 
@@ -61,8 +62,12 @@ void ModelOpenglWidget::initializeGL()
         shaderProgram.addShaderFromSourceFile(QOpenGLShader::Vertex, ":/shade/shade/shader_object.vert");
         shaderProgram.addShaderFromSourceFile(QOpenGLShader::Fragment, ":/shade/shade/shader_object.frag");
         glBufferData(GL_ARRAY_BUFFER, sizeof(this->pointData[0]) * pointData.size(), &pointData[0], GL_STATIC_DRAW);
-        glVertexAttribPointer(0, 3, GL_FLOAT,GL_FALSE, 3*sizeof(float), (void*)0);
+        glVertexAttribPointer(0, 3, GL_FLOAT,GL_FALSE, 6*sizeof(float), (void*)0);
         glEnableVertexAttribArray(0);
+        //glVertexAttribPointer(0, 3, GL_FLOAT,GL_FALSE, 6*sizeof(float), (void*)3);
+        //glEnableVertexAttribArray(1);
+        //glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
+
     }else {
         shaderProgram.addShaderFromSourceFile(QOpenGLShader::Vertex, ":/shade/shade/shader.vert");
         shaderProgram.addShaderFromSourceFile(QOpenGLShader::Fragment, ":/shade/shade/shader.frag");
@@ -71,6 +76,18 @@ void ModelOpenglWidget::initializeGL()
         glEnableVertexAttribArray(0);
         glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5*sizeof(float),(void*)(3 * sizeof (float)));
         glEnableVertexAttribArray(1);
+
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+        shaderProgram.bind();
+        shaderProgram.setUniformValue("textureWall", 0);
+        shaderProgram.setUniformValue("textureFace", 1);
     }
 
     success = shaderProgram.link();
@@ -82,18 +99,8 @@ void ModelOpenglWidget::initializeGL()
     textureSmall =new QOpenGLTexture(QImage(":/img/image/awesomeface.png").mirrored());
     textureSmall->generateMipMaps();
 
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     glEnable(GL_DEPTH_TEST);
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-    shaderProgram.bind();
-    shaderProgram.setUniformValue("textureWall", 0);
-    shaderProgram.setUniformValue("textureFace", 1);
     glBindVertexArray(0);
 }
 
@@ -122,9 +129,14 @@ void ModelOpenglWidget::paintGL()
     //mode.setToIdentity();
     //mode.translate(QVector3D(0.5f, -0.5f, 0.0f));
     //mode.rotate(45.0, QVector3D(1.0f, 0.5f,3.0f));
-
     shaderProgram.bind();
-    shaderProgram.setUniformValue("sample",sample);
+
+    if(this->pointData.size() > 0){
+        shaderProgram.setUniformValue("viewPos", camera.Position);
+    }else {
+        shaderProgram.setUniformValue("sample",sample);
+    }
+
     shaderProgram.setUniformValue("model",mode);
     shaderProgram.setUniformValue("view",view);
     shaderProgram.setUniformValue("projection",projection);
@@ -133,10 +145,11 @@ void ModelOpenglWidget::paintGL()
     textureWall->bind(0);
     textureSmall->bind(1);
     if(this->pointData.size() > 0){
-        glDrawArrays(GL_TRIANGLES,0, this->pointData.size());
+        glDrawArrays(GL_POINTS,0, this->pointData.size());
     }else {
-        glDrawArrays(GL_TRIANGLES,0, 36);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
     }
+    update();
 }
 
 void ModelOpenglWidget::keyPressEvent(QKeyEvent *event)
