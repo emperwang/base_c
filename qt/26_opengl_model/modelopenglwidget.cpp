@@ -4,7 +4,8 @@
 
 ModelOpenglWidget::ModelOpenglWidget(QWidget *parent) : QOpenGLWidget(parent)
 {
-
+    timer.start(500);
+    connect(&timer, &QTimer::timeout, this, &ModelOpenglWidget::onTimeout);
 }
 
 ModelOpenglWidget::~ModelOpenglWidget()
@@ -53,7 +54,8 @@ void ModelOpenglWidget::initializeGL()
 
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     glEnable(GL_DEPTH_TEST);
-
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
@@ -70,25 +72,24 @@ void ModelOpenglWidget::resizeGL(int w, int h)
     Q_UNUSED(w); Q_UNUSED(h);
 }
 
-QVector3D cameraPos = QVector3D(0.0f,0.0f, 3.0f);
-QVector3D cameraFront = QVector3D(0.0f, 0.0f, -1.0f);
-QVector3D cameraUp = QVector3D(0.0f, 1.0f, 0.0f);
-
 void ModelOpenglWidget::paintGL()
 {
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    QMatrix4x4 view = QMatrix4x4();
-    view.lookAt(cameraPos, cameraPos+cameraFront, cameraUp);
+    //QMatrix4x4 view = QMatrix4x4();
+    //view.lookAt(cameraPos, cameraPos+cameraFront, cameraUp);
+
+    QMatrix4x4 view = camera.GetViewMatrix();
 
     QMatrix4x4 projection = QMatrix4x4();
-    projection.perspective(45.0f,static_cast<float>(width()/height()), 0.1f, 100.0f);
+    projection.perspective(camera.Zoom,static_cast<float>(width()/height()), 0.1f, 100.0f);
 
+    int curentMsec =QTime::currentTime().msec();
     QMatrix4x4 mode = QMatrix4x4();
     mode.setToIdentity();
     //mode.translate(QVector3D(0.5f, -0.5f, 0.0f));
-    mode.rotate(-45, QVector3D(1.0f, 0.0f,0.0f));
+    mode.rotate(curentMsec, QVector3D(1.0f, 0.5f,3.0f));
 
     shaderProgram.bind();
     shaderProgram.setUniformValue("sample",sample);
@@ -130,6 +131,11 @@ void ModelOpenglWidget::updateSmapleDown()
     if (this->sample < 0.0){
         this->sample = 0.0;
     }
+}
+
+void ModelOpenglWidget::onTimeout()
+{
+    update();
 }
 
 void ModelOpenglWidget::mousePressEvent(QMouseEvent *event)

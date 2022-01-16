@@ -13,6 +13,10 @@
 #include <QKeyEvent>
 #include <QMouseEvent>
 #include <QWheelEvent>
+#include <QTime>
+#include <QTimer>
+
+#include "camera.h"
 
 class ModelOpenglWidget : public QOpenGLWidget,QOpenGLFunctions_3_3_Core
 {
@@ -38,10 +42,14 @@ private:
     QOpenGLTexture *textureWall;
     QOpenGLTexture *textureSmall;
     QOpenGLTexture *textureContainer;
-
+    QTimer timer;
     float sample = 0.2;
+    Camera camera = Camera(QVector3D(0.0f, 0.0f, 3.0f));
 
 signals:
+
+public slots:
+    void onTimeout();
 
 };
 
