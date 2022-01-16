@@ -225,6 +225,7 @@ void main() {
 
 	while (!glfwWindowShouldClose(window)) {
 		float current_frame = static_cast<float>(glfwGetTime());
+		std::cout << "glfwGetTime: " << current_frame << std::endl;
 		delta_time = current_frame - last_time;
 		last_time = current_frame;
 
