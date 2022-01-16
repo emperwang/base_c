@@ -58,14 +58,22 @@ void Camera::ProcessMouseMovement(float xoffset, float yoffset, bool constraintP
 }
 
 void Camera::ProcessMouseScroll(float yoffset) {
-    Zoom -= static_cast<float>(yoffset);
+//    Zoom -= static_cast<float>(yoffset);
 
-    if (Zoom < 1.0f) {
-        Zoom = 1.0f;
-    }
+//    if (Zoom < 1.0f) {
+//        Zoom = 1.0f;
+//    }
 
-    if (Zoom > 45.0f) {
-        Zoom = 45.0f;
+//    if (Zoom > 45.0f) {
+//        Zoom = 45.0f;
+//    }
+
+    yoffset *= MouseSensitivity;
+
+    Position.setZ(Position.z() + yoffset);
+
+    if(Position.z() < 0.00001f){
+        Position.setZ(0.00001f);
     }
 }
 

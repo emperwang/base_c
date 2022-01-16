@@ -186,7 +186,8 @@ void ModelOpenglWidget::mousePressEvent(QMouseEvent *event)
 
 void ModelOpenglWidget::wheelEvent(QWheelEvent *event)
 {
-
+    QPoint offset = event->angleDelta();
+    camera.ProcessMouseScroll(offset.y() / 20);
 }
 
 void ModelOpenglWidget::mouseMoveEvent(QMouseEvent *event)
