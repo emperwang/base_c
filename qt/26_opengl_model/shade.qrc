@@ -1,9 +1,6 @@
 <RCC>
     <qresource prefix="/shade">
         <file>shade/shader.frag</file>
-        <file>shade/shader.vs</file>
         <file>shade/shader_3d.vert</file>
-        <file>shade/Shader_transform.vs</file>
-        <file>shade/shader2.fs</file>
     </qresource>
 </RCC>
