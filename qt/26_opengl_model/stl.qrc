@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/">
+        <file>stl/complete.stl</file>
+        <file>stl/w0w285090.stl</file>
+        <file>stl/20201013_ARR_BR206_SERIE_ECE_V1_F2.STL</file>
+        <file>stl/20201013_ARR_BR206_SERIE_ECE_V1_F2_RE.STL</file>
+    </qresource>
+</RCC>

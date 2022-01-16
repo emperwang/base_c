@@ -1,12 +1,34 @@
 #include "modelopenglwidget.h"
 #include <ModelPoint.h>
 #include <QDebug>
+#include "readstlfile.h"
+#include "pointcloudprocess.h"
 
 ModelOpenglWidget::ModelOpenglWidget(QWidget *parent) : QOpenGLWidget(parent)
 {
     timer.start(100);
     time.start();
     connect(&timer, &QTimer::timeout, this, &ModelOpenglWidget::onTimeout);
+    ReadStlFile readStl;
+    readStl.ReadResourceFile(":/stl/20201013_ARR_BR206_SERIE_ECE_V1_F2_RE.STL");
+    std::vector<QVector3D> tmpPointList = readStl.getPointList();
+    std::vector<QVector3D> tmpVectorList = readStl.getVectorList();
+    QString str = QString("point size: %1, vector size: %2").arg(tmpPointList.size()).arg(tmpVectorList.size());
+    qDebug() << str;
+
+    PointCloudProcess pointCloud;
+    pointCloud.handlePointData(tmpPointList);
+
+    for(int i = 0; i < pointCloud.pointData.size(); i++ ){
+        int j = i / 3;
+        this->pointData.push_back(pointCloud.pointData[i].x());
+        this->pointData.push_back(pointCloud.pointData[i].y());
+        this->pointData.push_back(pointCloud.pointData[i].z());
+
+        this->pointData.push_back(tmpVectorList[j].x());
+        this->pointData.push_back(tmpVectorList[j].y());
+        this->pointData.push_back(tmpVectorList[j].z());
+    }
 }
 
 ModelOpenglWidget::~ModelOpenglWidget()
@@ -28,12 +50,6 @@ void ModelOpenglWidget::initializeGL()
     qDebug() << "attributes: " << attributes;
 
     bool success = true;
-    shaderProgram.addShaderFromSourceFile(QOpenGLShader::Vertex, ":/shade/shade/shader.vert");
-    shaderProgram.addShaderFromSourceFile(QOpenGLShader::Fragment, ":/shade/shade/shader.frag");
-    success = shaderProgram.link();
-    if(!success){
-        qDebug() << "link shader program error.\n";
-    }
 
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
@@ -41,13 +57,26 @@ void ModelOpenglWidget::initializeGL()
     glBindVertexArray(VAO);
 
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices_3d), vertices_3d, GL_STATIC_DRAW);
+    if (this->pointData.size() > 0){
+        shaderProgram.addShaderFromSourceFile(QOpenGLShader::Vertex, ":/shade/shade/shader_object.vert");
+        shaderProgram.addShaderFromSourceFile(QOpenGLShader::Fragment, ":/shade/shade/shader_object.frag");
+        glBufferData(GL_ARRAY_BUFFER, sizeof(this->pointData[0]) * pointData.size(), &pointData[0], GL_STATIC_DRAW);
+        glVertexAttribPointer(0, 3, GL_FLOAT,GL_FALSE, 3*sizeof(float), (void*)0);
+        glEnableVertexAttribArray(0);
+    }else {
+        shaderProgram.addShaderFromSourceFile(QOpenGLShader::Vertex, ":/shade/shade/shader.vert");
+        shaderProgram.addShaderFromSourceFile(QOpenGLShader::Fragment, ":/shade/shade/shader.frag");
+        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices_3d), vertices_3d, GL_STATIC_DRAW);
+        glVertexAttribPointer(0, 3, GL_FLOAT,GL_FALSE, 5*sizeof(float), (void*)0);
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5*sizeof(float),(void*)(3 * sizeof (float)));
+        glEnableVertexAttribArray(1);
+    }
 
-    glVertexAttribPointer(0, 3, GL_FLOAT,GL_FALSE, 5*sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5*sizeof(float),(void*)(3 * sizeof (float)));
-    glEnableVertexAttribArray(1);
-
+    success = shaderProgram.link();
+    if(!success){
+        qDebug() << "link shader program error.\n";
+    }
     textureWall = new QOpenGLTexture(QImage(":/img/image/wall.jpg").mirrored());
     textureWall->generateMipMaps();
     textureSmall =new QOpenGLTexture(QImage(":/img/image/awesomeface.png").mirrored());
@@ -103,8 +132,11 @@ void ModelOpenglWidget::paintGL()
     glBindVertexArray(VAO);
     textureWall->bind(0);
     textureSmall->bind(1);
-
-    glDrawArrays(GL_TRIANGLES,0, 36);
+    if(this->pointData.size() > 0){
+        glDrawArrays(GL_TRIANGLES,0, this->pointData.size());
+    }else {
+        glDrawArrays(GL_TRIANGLES,0, 36);
+    }
 }
 
 void ModelOpenglWidget::keyPressEvent(QKeyEvent *event)

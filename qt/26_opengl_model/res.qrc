@@ -3,5 +3,10 @@
         <file>image/awesomeface.png</file>
         <file>image/container.jpg</file>
         <file>image/wall.jpg</file>
+        <file>image/08.jpg</file>
+        <file>image/09.jpg</file>
+        <file>image/10.jfif</file>
+        <file>image/11.png</file>
+        <file>image/12.png</file>
     </qresource>
 </RCC>

@@ -67,6 +67,9 @@ private:
     QMatrix4x4 modeUse;
     QMatrix4x4 modeSave;
 
+    // data from file
+    std::vector<GLfloat> pointData;
+
 signals:
 
 public slots:

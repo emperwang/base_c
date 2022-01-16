@@ -4,6 +4,8 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 CONFIG += c++11
 
+CONFIG+=resources_big
+
 # The following define makes your compiler emit warnings if you use
 # any Qt feature that has been marked deprecated (the exact warnings
 # depend on your compiler). Please consult the documentation of the
@@ -19,13 +21,17 @@ SOURCES += \
     camera.cpp \
     main.cpp \
     mainwindow.cpp \
-    modelopenglwidget.cpp
+    modelopenglwidget.cpp \
+    pointcloudprocess.cpp \
+    readstlfile.cpp
 
 HEADERS += \
     ModelPoint.h \
     camera.h \
     mainwindow.h \
-    modelopenglwidget.h
+    modelopenglwidget.h \
+    pointcloudprocess.h \
+    readstlfile.h
 
 FORMS += \
     mainwindow.ui
@@ -37,4 +43,5 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 RESOURCES += \
     res.qrc \
-    shade.qrc
+    shade.qrc \
+    stl.qrc
