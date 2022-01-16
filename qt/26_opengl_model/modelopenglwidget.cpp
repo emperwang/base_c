@@ -28,7 +28,7 @@ void ModelOpenglWidget::initializeGL()
     qDebug() << "attributes: " << attributes;
 
     bool success = true;
-    shaderProgram.addShaderFromSourceFile(QOpenGLShader::Vertex, ":/shade/shade/shader_3d.vert");
+    shaderProgram.addShaderFromSourceFile(QOpenGLShader::Vertex, ":/shade/shade/shader.vert");
     shaderProgram.addShaderFromSourceFile(QOpenGLShader::Fragment, ":/shade/shade/shader.frag");
     success = shaderProgram.link();
     if(!success){
@@ -88,7 +88,7 @@ void ModelOpenglWidget::paintGL()
     QMatrix4x4 projection = QMatrix4x4();
     projection.perspective(camera.Zoom,static_cast<float>(width()/height()), 0.1f, 100.0f);
 
-    int curentMsec =QTime::currentTime().msec();
+    //int curentMsec =QTime::currentTime().msec();
     //mode = QMatrix4x4();
     //mode.setToIdentity();
     //mode.translate(QVector3D(0.5f, -0.5f, 0.0f));
