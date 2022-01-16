@@ -15,6 +15,9 @@
 #include <QWheelEvent>
 #include <QTime>
 #include <QTimer>
+#include <QMouseEvent>
+#include <QWheelEvent>
+#include <QPoint>
 
 #include "camera.h"
 
@@ -32,9 +35,16 @@ protected:
     virtual void keyPressEvent(QKeyEvent *event);
     virtual void mousePressEvent(QMouseEvent *event);
     virtual void wheelEvent(QWheelEvent *event);
+    virtual void mouseMoveEvent(QMouseEvent * event);
 
+    void setPressPoint(QPoint &point);
     void updateSmapleUp();
     void updateSmapleDown();
+
+
+
+private:
+    void translatePoint(QPoint &point);
 
 private:
     QOpenGLShaderProgram shaderProgram;
@@ -47,8 +57,15 @@ private:
     bool first = true;
     float deltaTime;
     float lastTime;
+    QPoint deltaPos;
+    QPoint lastPos;
+    QPoint pressPoint;
     float sample = 0.2;
     Camera camera = Camera(QVector3D(0.0f, 0.0f, 3.0f));
+    // 模式矩阵
+    QMatrix4x4 mode;
+    QMatrix4x4 modeUse;
+    QMatrix4x4 modeSave;
 
 signals:
 

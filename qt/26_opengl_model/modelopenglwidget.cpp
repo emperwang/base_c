@@ -70,7 +70,9 @@ void ModelOpenglWidget::initializeGL()
 
 void ModelOpenglWidget::resizeGL(int w, int h)
 {
-    Q_UNUSED(w); Q_UNUSED(h);
+    makeCurrent();
+    glViewport(0,0,w,h);
+    doneCurrent();
 }
 
 void ModelOpenglWidget::paintGL()
@@ -87,10 +89,10 @@ void ModelOpenglWidget::paintGL()
     projection.perspective(camera.Zoom,static_cast<float>(width()/height()), 0.1f, 100.0f);
 
     int curentMsec =QTime::currentTime().msec();
-    QMatrix4x4 mode = QMatrix4x4();
-    mode.setToIdentity();
+    //mode = QMatrix4x4();
+    //mode.setToIdentity();
     //mode.translate(QVector3D(0.5f, -0.5f, 0.0f));
-    mode.rotate(45.0, QVector3D(1.0f, 0.5f,3.0f));
+    //mode.rotate(45.0, QVector3D(1.0f, 0.5f,3.0f));
 
     shaderProgram.bind();
     shaderProgram.setUniformValue("sample",sample);
@@ -146,6 +148,16 @@ void ModelOpenglWidget::updateSmapleDown()
     }
 }
 
+// translate point from QT to opengl
+void ModelOpenglWidget::translatePoint(QPoint &point)
+{
+    int x = point.x() - this->width()/2;
+    int y = -(point.y() - this->height()/2);
+
+    point.setX(x);
+    point.setY(y);
+}
+
 void ModelOpenglWidget::onTimeout()
 {
     float currentTime = time.elapsed()/1000.0;
@@ -161,10 +173,46 @@ void ModelOpenglWidget::onTimeout()
 
 void ModelOpenglWidget::mousePressEvent(QMouseEvent *event)
 {
+    QPoint currentPos = event->pos();
+    QString str = QString("mousePressEvent x :%1, y: %2").arg(currentPos.x()).arg(currentPos.y());
+    //qDebug() << str;
+    if(event->buttons() & Qt::LeftButton)
+    {
+        modeUse = modeSave;
+        setPressPoint(currentPos);
+    }
 
 }
 
 void ModelOpenglWidget::wheelEvent(QWheelEvent *event)
 {
 
+}
+
+void ModelOpenglWidget::mouseMoveEvent(QMouseEvent *event)
+{
+    QPoint curPos = event->pos();
+    translatePoint(curPos);
+
+    deltaPos = curPos - pressPoint;
+    if(event->buttons() & Qt::LeftButton){
+        QString str = QString("mouse move Event x :%1, y: %2").arg(curPos.x()).arg(curPos.y());
+        //qDebug() << str;
+        mode.setToIdentity();
+        GLfloat angleNow = qSqrt(qPow(deltaPos.x(), 2)+ qPow(deltaPos.y(), 2)) / 5;
+        mode.rotate(angleNow, -deltaPos.y(), deltaPos.x(), 0.0);
+        mode = mode * modeUse;
+
+        modeSave.setToIdentity();
+        modeSave.rotate(angleNow, -deltaPos.y(), deltaPos.x(), 0.0);
+        modeSave = modeSave * modeUse;
+
+        update();
+    }
+}
+
+void ModelOpenglWidget::setPressPoint(QPoint &point)
+{
+    translatePoint(point);
+    pressPoint = point;
 }
