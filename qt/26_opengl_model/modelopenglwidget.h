@@ -43,6 +43,10 @@ private:
     QOpenGLTexture *textureSmall;
     QOpenGLTexture *textureContainer;
     QTimer timer;
+    QTime time;
+    bool first = true;
+    float deltaTime;
+    float lastTime;
     float sample = 0.2;
     Camera camera = Camera(QVector3D(0.0f, 0.0f, 3.0f));
 

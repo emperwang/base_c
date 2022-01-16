@@ -35,6 +35,7 @@ void Camera::ProcessKeyBoard(Camera_Movement direction, float deltaTime) {
     if (direction == RIGHT) {
         Position += Right * velocity;
     }
+    //updateCaneraVectors();
 }
 
 void Camera::ProcessMouseMovement(float xoffset, float yoffset, bool constraintPitch) {

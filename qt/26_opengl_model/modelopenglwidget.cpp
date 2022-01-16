@@ -4,7 +4,8 @@
 
 ModelOpenglWidget::ModelOpenglWidget(QWidget *parent) : QOpenGLWidget(parent)
 {
-    timer.start(500);
+    timer.start(100);
+    time.start();
     connect(&timer, &QTimer::timeout, this, &ModelOpenglWidget::onTimeout);
 }
 
@@ -89,7 +90,7 @@ void ModelOpenglWidget::paintGL()
     QMatrix4x4 mode = QMatrix4x4();
     mode.setToIdentity();
     //mode.translate(QVector3D(0.5f, -0.5f, 0.0f));
-    mode.rotate(curentMsec, QVector3D(1.0f, 0.5f,3.0f));
+    mode.rotate(45.0, QVector3D(1.0f, 0.5f,3.0f));
 
     shaderProgram.bind();
     shaderProgram.setUniformValue("sample",sample);
@@ -114,6 +115,18 @@ void ModelOpenglWidget::keyPressEvent(QKeyEvent *event)
          case Qt::Key_Down:
             updateSmapleDown();
             break;
+        case Qt::Key_W:
+            camera.ProcessKeyBoard(Camera_Movement::FORWARD, deltaTime);
+            break;
+        case Qt::Key_S:
+            camera.ProcessKeyBoard(Camera_Movement::BACKWARD, deltaTime);
+            break;
+        case Qt::Key_A:
+            camera.ProcessKeyBoard(Camera_Movement::LEFT, deltaTime);
+            break;
+        case Qt::Key_D:
+            camera.ProcessKeyBoard(Camera_Movement::RIGHT, deltaTime);
+            break;
     }
     update();
 }
@@ -135,6 +148,14 @@ void ModelOpenglWidget::updateSmapleDown()
 
 void ModelOpenglWidget::onTimeout()
 {
+    float currentTime = time.elapsed()/1000.0;
+    if(first){
+        first = false;
+        lastTime = currentTime;
+    }
+
+    deltaTime = currentTime - lastTime;
+    lastTime = currentTime;
     update();
 }
 
