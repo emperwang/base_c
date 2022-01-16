@@ -85,6 +85,7 @@ build
 
 #qt creator
 build-*
+*.pro.user
 
 .vscode
 *.sdf
