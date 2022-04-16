@@ -78,7 +78,7 @@ void keyEvent()
 				goto end;
 		}
 	}
-end:;
+	end:
 	int ch = _getch();
 	// up 72  down 80 left 75  right 77
 	//printf("%d -- %c", ch, ch);
