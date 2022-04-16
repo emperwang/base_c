@@ -18,3 +18,5 @@ void keyEvent();
 bool isPassed();
 
 bool checkAllPass();
+
+void changeTitle(const char*);

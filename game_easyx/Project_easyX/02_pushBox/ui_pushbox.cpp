@@ -255,7 +255,11 @@ void drawBox()
 
 }
 
-
+void changeTitle(const char* title)
+{
+	HWND hwnd = GetHWnd();
+	SetWindowText(hwnd, title);
+}
 
 
 
