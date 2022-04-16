@@ -7,7 +7,7 @@
 
 
 // example 6
-//void playMp3();
+void playMp3();
 
 void changetitle();
 

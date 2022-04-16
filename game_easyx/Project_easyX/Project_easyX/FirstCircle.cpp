@@ -74,18 +74,18 @@ void matrix()
 	settextcolor(GREEN);
 	setlinecolor(BLACK);
 
-	for (int i = 0; i <= 479; i++)
+	for (int i = 0; i <= 799; i++)
 	{
 		for (int j = 0; j < 3; j++)
 		{
 			x = (rand() % 80) * 8;
-			y = (rand() % 20) * 24;
+			y = (rand() % 20) * 40;
 			c = (rand() % 26) + 65;
 			outtextxy(x, y, c);
 		}
 		line(0, i, 639, i);
 		Sleep(10);
-		if (i >= 479) i = -1;
+		if (i >= 799) i = -1;
 		if (_kbhit()) break;
 	}
 	_getch();
@@ -126,7 +126,9 @@ void MouseOperation()
 			else
 				rectangle(m.x - 5, m.y - 5, m.x + 5, m.y + 5);
 			break;
-
+		case WM_RBUTTONDOWN:
+			cleardevice();
+			break;
 		case WM_KEYDOWN:
 			// press ESC key to exit
 			if (m.vkcode == VK_ESCAPE)
@@ -178,13 +180,14 @@ void changetitle()
 	SetWindowText(hnd, "GamePlus");
 }
 
-/*void playMp3()
+void playMp3()
 {
 	mciSendString("open ./ThatGirl.mp3 alias BGM", 0, 0, 0);
 	//mciSendString("play ./ThatGirl.mp3", 0, 0, 0);
 	mciSendString("play BGM repeat", 0, 0, 0);
-	mciSendString("close BGM",0,0,0);
-}*/
+	//mciSendString("close BGM",0,0,0);
+	while (true);
+}
 
 
 
