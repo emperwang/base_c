@@ -20,7 +20,7 @@ int speed = 1;
 // 当前关数
 int level = 1;
 // 目标得分
-int goalScore = 1;
+int goalScore = 10;
 
 // 蛇移动
 void moveSnake()
@@ -244,7 +244,7 @@ void updateWithInput()
 	if (isFailer)return;
 	static int waitIndex = 1;
 	waitIndex++;
-	if (waitIndex == 10)
+	if (waitIndex == (10/level))
 	{
 		moveSnake();
 		waitIndex = 1;
@@ -274,7 +274,7 @@ void updateWithoutInput()
 			BYTE scanCode = msg.scancode;
 			updateDirection(scanCode);
 			moveSnake();
-			Sleep(100);
+			Sleep((100/level));
 			break;
 		}
 	}
