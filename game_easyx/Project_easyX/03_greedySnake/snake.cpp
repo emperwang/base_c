@@ -118,12 +118,17 @@ void checkSuccess()
 		level += 1;
 		speed += 1;
 		gameWin = true;
+		showMessage(240, 200, "恭喜通关");
+		FlushBatchDraw();
+		ExMessage msg = getmessage(EM_KEY);
+		reset();
 	}
 }
 
 // 游戏通过后,状态复位
 void reset()
 {
+	gameWin = false;
 	memset(Blocks, 0, sizeof(Blocks));
 	srand((unsigned int)time(NULL));
 	//Blocks[WIDTH / 2][HEIGHT / 2] = 1;
@@ -262,9 +267,8 @@ void updateWithoutInput()
 			break;
 			// 游戏继续
 		case WM_LBUTTONDOWN:
-			reset();
+			//reset();
 			gamePaused = false;
-			gameWin = false;
 			break;
 		case WM_KEYUP: 
 			BYTE scanCode = msg.scancode;
