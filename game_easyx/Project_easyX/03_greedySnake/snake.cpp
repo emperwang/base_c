@@ -9,7 +9,12 @@ int Blocks[HEIGHT][WIDTH] = { 0 };
 DIRECTION moveDirection = RIGHT;
 int isFailer = 0;
 int food_i, food_j;
+//游戏暂停
 bool gamePaused = false;
+// 得分
+int scores = 0;
+// snake移动速度
+int speed = 1;
 
 // 蛇移动
 void moveSnake()
@@ -88,6 +93,7 @@ void moveSnake()
 		// 增加新的食物
 		food_i = rand() % (HEIGHT - 5) + 2;
 		food_j = rand() % (WIDTH - 5) + 2;
+		scores++;
 	}
 	else
 	{
@@ -149,22 +155,32 @@ void Show()
 	// 失败输出
 	if (isFailer)
 	{
-		showMessage("游戏失败");
+		showMessage(240, 200, "游戏失败");
 	}
 
 	if (gamePaused) 
 	{
-		showMessage("游戏暂停");
+		showMessage(240, 200, "游戏暂停");
 	}
-
+	char score[20];
+	sprintf_s(score, "%s%d", "得分:",scores);
+	showScore(score);
 	FlushBatchDraw();
 }
 
-void showMessage(const char* msg)
+void showScore(const char* score)
+{
+	setbkmode(TRANSPARENT);
+	settextcolor(RGB(0, 0, 255));
+	settextstyle(30, 0, _T("宋体"));
+	outtextxy(10, 10, _T(score));
+}
+
+void showMessage(int x, int y, const char* msg)
 {
 	setbkmode(TRANSPARENT);
 	settextcolor(RGB(255, 0, 0));
-	settextstyle(80, 0, _T("宋体"));
+	settextstyle(80, 0, _T("Consolas"));
 	outtextxy(240, 200, _T(msg));
 }
 

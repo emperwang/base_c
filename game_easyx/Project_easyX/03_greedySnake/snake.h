@@ -23,4 +23,6 @@ void changeTitle(const char* title);
 
 void updateDirection(int input);
 
-void showMessage(const char* msg);
+void showMessage(int x, int y, const char* msg);
+
+void showScore(const char* score);
