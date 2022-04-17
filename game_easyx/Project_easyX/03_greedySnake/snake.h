@@ -25,4 +25,9 @@ void updateDirection(int input);
 
 void showMessage(int x, int y, const char* msg);
 
-void showScore(const char* score);
+void showScore(int x, int y, const char* score);
+
+void checkSuccess();
+
+// ”Œœ∑∏¥Œª
+void reset();

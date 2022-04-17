@@ -11,15 +11,21 @@ int isFailer = 0;
 int food_i, food_j;
 //游戏暂停
 bool gamePaused = false;
+bool gameWin = false;
 // 得分
 int scores = 0;
 // snake移动速度
 int speed = 1;
 
+// 当前关数
+int level = 1;
+// 目标得分
+int goalScore = 1;
+
 // 蛇移动
 void moveSnake()
 {
-	if (gamePaused)
+	if (gamePaused || gameWin)
 	{
 		return;
 	}
@@ -94,6 +100,7 @@ void moveSnake()
 		food_i = rand() % (HEIGHT - 5) + 2;
 		food_j = rand() % (WIDTH - 5) + 2;
 		scores++;
+		checkSuccess();
 	}
 	else
 	{
@@ -101,6 +108,34 @@ void moveSnake()
 		Blocks[oldTail_i][oldTail_j] = 0;
 	}
 }
+
+void checkSuccess()
+{
+	if (scores >= goalScore)
+	{
+		scores = 0;
+		goalScore *= 2;
+		level += 1;
+		speed += 1;
+		gameWin = true;
+	}
+}
+
+// 游戏通过后,状态复位
+void reset()
+{
+	memset(Blocks, 0, sizeof(Blocks));
+	srand((unsigned int)time(NULL));
+	//Blocks[WIDTH / 2][HEIGHT / 2] = 1;
+	for (int i = 0; i < 5; i++)
+	{
+		Blocks[HEIGHT / 2][WIDTH / 2 - i] = i + 1;
+	}
+	moveDirection = RIGHT;
+	food_i = rand() % (HEIGHT - 5) + 2;
+	food_j = rand() % (WIDTH - 5) + 2;
+}
+
 // 1. 初始化 蛇位置
 // 2. 初始化 graphics
 // 3. 初始化 食物 位置
@@ -162,18 +197,32 @@ void Show()
 	{
 		showMessage(240, 200, "游戏暂停");
 	}
+
+	if (gameWin)
+	{
+		showMessage(240, 200, "恭喜通关");
+	}
 	char score[20];
 	sprintf_s(score, "%s%d", "得分:",scores);
-	showScore(score);
+	showScore(10,10,score);
+	
+	memset(score, 0, sizeof(score));
+	sprintf_s(score, "%s%d", "目标:", goalScore);
+	showScore(WIDTH*BLACKSIZE -120, 10, score);
+	
+	memset(score, 0, sizeof(score));
+	sprintf_s(score, "%s%d", "关卡:", level);
+	showScore((WIDTH*BLACKSIZE)/2 - 120, 10, score);
+
 	FlushBatchDraw();
 }
 
-void showScore(const char* score)
+void showScore(int x, int y, const char* score)
 {
 	setbkmode(TRANSPARENT);
 	settextcolor(RGB(0, 0, 255));
 	settextstyle(30, 0, _T("宋体"));
-	outtextxy(10, 10, _T(score));
+	outtextxy(x, y, _T(score));
 }
 
 void showMessage(int x, int y, const char* msg)
@@ -181,7 +230,7 @@ void showMessage(int x, int y, const char* msg)
 	setbkmode(TRANSPARENT);
 	settextcolor(RGB(255, 0, 0));
 	settextstyle(80, 0, _T("Consolas"));
-	outtextxy(240, 200, _T(msg));
+	outtextxy(x, y, _T(msg));
 }
 
 // 用户没有输入时的 处理
@@ -213,7 +262,9 @@ void updateWithoutInput()
 			break;
 			// 游戏继续
 		case WM_LBUTTONDOWN:
+			reset();
 			gamePaused = false;
+			gameWin = false;
 			break;
 		case WM_KEYUP: 
 			BYTE scanCode = msg.scancode;
