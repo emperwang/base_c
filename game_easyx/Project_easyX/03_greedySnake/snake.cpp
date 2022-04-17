@@ -1,10 +1,10 @@
 #include "snake.h"
-
+#include <time.h>
 #define WIDTH 40
-#define HEIGHT 30
+#define HEIGHT 40
 #define BLACKSIZE 20
 
-int Blocks[WIDTH][HEIGHT] = { 0 };
+int Blocks[HEIGHT][WIDTH] = { 0 };
 int moveDirection = 0;
 int isFailer = 0;
 int food_i, food_j;
@@ -13,9 +13,9 @@ int food_i, food_j;
 // 蛇移动
 void moveSnake()
 {
-	for (int i = 0; i < WIDTH; i++)
+	for (int i = 0; i < HEIGHT; i++)
 	{
-		for (int j = 0; j < HEIGHT; j++)
+		for (int j = 0; j < WIDTH; j++)
 		{
 			if (Blocks[i][j] > 0)
 			{
@@ -23,12 +23,12 @@ void moveSnake()
 			}
 		}
 	}
-	int oldTail_i, oldTail_j, oldHead_i, oldHeal_j;
+	int oldTail_i=0, oldTail_j=0, oldHead_i=0, oldHeal_j=0;
 	int max = 0;
 	// 找出最大位置,最大位置就是蛇尾
-	for (int i = 0; i < WIDTH; i++)
+	for (int i = 0; i < HEIGHT; i++)
 	{
-		for (int j = 0; j < HEIGHT; j++)
+		for (int j = 0; j < WIDTH; j++)
 		{
 			if (max < Blocks[i][j])
 			{
@@ -103,15 +103,16 @@ void moveSnake()
 // 3. 初始化 食物 位置
 void Init()
 {
+	srand((unsigned int)time(NULL));
 	//Blocks[WIDTH / 2][HEIGHT / 2] = 1;
 	for (int i = 0; i < 5; i++)
 	{
-		Blocks[WIDTH / 2][HEIGHT / 2 - i] = i + 1;
+		Blocks[HEIGHT / 2][WIDTH / 2 - i] = i + 1;
 	}
 	moveDirection = 77;
 	food_i = rand() % (HEIGHT - 5) + 2;
 	food_j = rand() % (WIDTH - 5) + 2;
-	initgraph(HEIGHT*BLACKSIZE, WIDTH*BLACKSIZE); // EW_SHOWCONSOLE
+	initgraph(WIDTH*BLACKSIZE, HEIGHT*BLACKSIZE); // EW_SHOWCONSOLE
 	setlinecolor(RGB(200, 200, 200));
 	BeginBatchDraw();
 }
@@ -120,9 +121,9 @@ void Show()
 {
 	// clear screen
 	cleardevice();
-	for (int i = 0; i < WIDTH; i++)
+	for (int i = 0; i < HEIGHT; i++)
 	{
-		for (int j = 0; j < HEIGHT; j++)
+		for (int j = 0; j < WIDTH; j++)
 		{
 			if (Blocks[i][j]>0)
 			{
@@ -139,7 +140,7 @@ void Show()
 
 	// 设置食物的位置
 	setfillcolor(RGB(0,255,0));
-	fillrectangle(food_i*BLACKSIZE, food_j*BLACKSIZE, (food_i + 1)*BLACKSIZE, (food_j + 1)*BLACKSIZE);
+	fillrectangle(food_j*BLACKSIZE, food_i*BLACKSIZE, (food_j + 1)*BLACKSIZE, (food_i + 1)*BLACKSIZE);
 
 	// 失败输出
 	if (isFailer)
