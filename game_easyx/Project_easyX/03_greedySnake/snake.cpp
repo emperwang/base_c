@@ -1,18 +1,23 @@
 #include "snake.h"
 #include <time.h>
+#include <iostream>
 #define WIDTH 40
 #define HEIGHT 40
 #define BLACKSIZE 20
 
 int Blocks[HEIGHT][WIDTH] = { 0 };
-int moveDirection = 0;
+DIRECTION moveDirection = RIGHT;
 int isFailer = 0;
 int food_i, food_j;
-
+bool gamePaused = false;
 
 // 蛇移动
 void moveSnake()
 {
+	if (gamePaused)
+	{
+		return;
+	}
 	for (int i = 0; i < HEIGHT; i++)
 	{
 		for (int j = 0; j < WIDTH; j++)
@@ -50,24 +55,16 @@ void moveSnake()
 	int newHead_j = oldHeal_j;
 	switch (moveDirection)
 	{
-	case 72:
-	case 'w':
-	case 'W':
+	case UP:
 		newHead_i = oldHead_i - 1;
 		break;
-	case 80:
-	case 's':
-	case 'S':
+	case DOWN:
 		newHead_i = oldHead_i + 1;
 		break;
-	case 75:
-	case 'a':
-	case 'A':
+	case LEFT:
 		newHead_j = oldHeal_j-1;
 		break;
-	case 77:
-	case 'd':
-	case 'D':
+	case RIGHT:
 		newHead_j = oldHeal_j + 1;
 		break;
 	default:
@@ -109,12 +106,19 @@ void Init()
 	{
 		Blocks[HEIGHT / 2][WIDTH / 2 - i] = i + 1;
 	}
-	moveDirection = 77;
+	moveDirection = RIGHT;
 	food_i = rand() % (HEIGHT - 5) + 2;
 	food_j = rand() % (WIDTH - 5) + 2;
 	initgraph(WIDTH*BLACKSIZE, HEIGHT*BLACKSIZE); // EW_SHOWCONSOLE
 	setlinecolor(RGB(200, 200, 200));
+	changeTitle("Snake");
 	BeginBatchDraw();
+}
+
+void changeTitle(const char* title)
+{
+	HWND hwnd = GetHWnd();
+	SetWindowText(hwnd, title);
 }
 
 void Show()
@@ -145,13 +149,23 @@ void Show()
 	// 失败输出
 	if (isFailer)
 	{
-		setbkmode(TRANSPARENT);
-		settextcolor(RGB(255, 0, 0));
-		settextstyle(80, 0, _T("宋体"));
-		outtextxy(240, 200, _T("游戏失败"));
+		showMessage("游戏失败");
+	}
+
+	if (gamePaused) 
+	{
+		showMessage("游戏暂停");
 	}
 
 	FlushBatchDraw();
+}
+
+void showMessage(const char* msg)
+{
+	setbkmode(TRANSPARENT);
+	settextcolor(RGB(255, 0, 0));
+	settextstyle(80, 0, _T("宋体"));
+	outtextxy(240, 200, _T(msg));
 }
 
 // 用户没有输入时的 处理
@@ -170,17 +184,56 @@ void updateWithInput()
 // 处理用户输入
 void updateWithoutInput() 
 {
-	if (_kbhit())
+	ExMessage msg;
+	if (peekmessage(&msg, EM_MOUSE | EM_KEY, false) && !isFailer)
 	{
-		char input = _getch();
-		if (input == 72 || input == 80 || input == 75 || input == 77 ||
-			input == 'a' || input == 'w' || input == 's'|| input == 'd' ||
-			input == 'A' || input == 'W' || input == 'S' || input == 'D')
+		//char input = _getch();
+		msg = getmessage(EM_MOUSE | EM_KEY);
+		switch (msg.message)
 		{
-			moveDirection = input;
+			// 游戏暂停
+		case WM_RBUTTONDOWN:
+			gamePaused = true;
+			break;
+			// 游戏继续
+		case WM_LBUTTONDOWN:
+			gamePaused = false;
+			break;
+		case WM_KEYUP: 
+			BYTE scanCode = msg.scancode;
+			updateDirection(scanCode);
 			moveSnake();
 			Sleep(100);
+			break;
 		}
 	}
 }
 
+
+void updateDirection(int input)
+{
+	switch (input)
+	{
+		// 72 up 向上箭头, 80 down, 75 left, 77 right
+	case  72:
+	case 'w':
+	case 'W':
+		moveDirection = UP;
+		break;
+	case  80:
+	case 's':
+	case 'S':
+		moveDirection = DOWN;
+		break;
+	case  75:
+	case 'a':
+	case 'A':
+		moveDirection = LEFT;
+		break;
+	case  77:
+	case 'd':
+	case 'D':
+		moveDirection = RIGHT;
+		break;
+	}
+}

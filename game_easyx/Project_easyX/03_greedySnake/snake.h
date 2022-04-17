@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <graphics.h>
 
-enum direction 
+enum DIRECTION 
 {
 	UP=0,
 	DOWN,
@@ -19,6 +19,8 @@ void updateWithInput();
 
 void updateWithoutInput();
 
+void changeTitle(const char* title);
 
+void updateDirection(int input);
 
-
+void showMessage(const char* msg);

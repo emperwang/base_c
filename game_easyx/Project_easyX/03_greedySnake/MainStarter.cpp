@@ -1,6 +1,6 @@
 #include "snake.h"
 
-
+extern bool gamePaused;
 int main()
 {
 	Init();
@@ -10,6 +10,5 @@ int main()
 		updateWithInput();
 		updateWithoutInput();
 	}
-
 	return 0;
 }
