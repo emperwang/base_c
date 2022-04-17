@@ -10,10 +10,10 @@ int main()
 {
 	system("mode con lines=10 cols=25");
 	initgraph(10*64, 10*64);
-	cleardevice();
 	changeTitle("push Box");
 	setbkcolor(WHITE);
 	setfillcolor(WHITE);
+	cleardevice();
 	loadImg();
 	ui_pushbox();
 	_getch();

@@ -1,4 +1,5 @@
 #include "interest.h"
+#include <iostream>
 
 void fallBall()
 {
@@ -10,22 +11,25 @@ void fallBall()
 	int ballX = 300;
 	int ballY = 200;
 	int ballR = 20;
-	// 每次下落的距离
-	int step = 10;
+	// 小球初始加速度
+	double step = 0;
 	//模拟加速度
-	int g = 1.5;
+	double g = 1.5;
 	while (1)
 	{
-		step *= g;
+		step += g;
+		ballY += step;
+		std::cout << "y = " << ballY << std::endl;
 		cleardevice();
 		// 防止小球穿过 地面
 		if (ballY >= (height - ballR))
 		{
 			ballY = (height - ballR);
+			// 反向加速度
+			step *= -0.9;
 		}
 		fillcircle(ballX, ballY, ballR);
-		Sleep(1000);
-		ballY += step;
+		Sleep(10);
 	}
 	closegraph();
 }
@@ -51,18 +55,53 @@ void donotTouchBar()
 	initgraph(width, height);
 	int scores = 0;
 	BeginBatchDraw();
+	// 暂停
+	bool pause = false;
+	// 是否碰撞
+	bool collision = false;
+	ExMessage msg;
+	LPCTSTR str = "游戏暂停";
+	int fontWidth = textwidth(str);
+	// 是否加分
+	bool isPlused = false;
 	while (1)
 	{
-		if (_kbhit()) 
+		if (peekmessage(&msg, EM_MOUSE | EM_KEY,false))
 		{
-			// 空格: 32
-			int ch = _getch();
-			//printf("%d--%c\n", ch, ch);
-			// 如果输入的是空格, 那么就给小球一个向上的速度
-			if (ch == 32)
+			// 获取消息
+			msg = getmessage(EM_MOUSE | EM_KEY);
+			switch (msg.message)
 			{
-				vy = -16;
+				// 右键按下, 暂停游戏
+			case WM_RBUTTONDOWN:
+				settextstyle(40, 0, _T("宋体"));
+				settextcolor(BLUE);
+				outtextxy((width - fontWidth) / 2,height/2, str);
+				FlushBatchDraw();
+				pause = true;
+				break;
+				// 左键按下, 游戏继续
+			case WM_LBUTTONDOWN:
+				clearrectangle((width - fontWidth) / 2, height / 2-40, (width - fontWidth) / 2+fontWidth, height / 2 + 40);
+				FlushBatchDraw();
+				pause = false;
+				break;
+			case WM_KEYDOWN:
+				// 空格: 32
+				int ch = _getch();
+				//printf("%d--%c\n", ch, ch);
+				// 如果输入的是空格, 那么就给小球一个向上的速度
+				if (ch == 32)
+				{
+					vy = -16;
+				}
+				break;
 			}
+	
+		}
+		if (pause)
+		{
+			continue;
 		}
 		// 小球的移动
 		vy += gravity;
@@ -74,6 +113,7 @@ void donotTouchBar()
 		if (rectX <= -rectWidth)
 		{
 			rectX = width - rectWidth;
+			isPlused = false;
 		}
 
 		// 防止小球跑出画面
@@ -98,24 +138,35 @@ void donotTouchBar()
 			((rectX + rectWidth) >= (ballX - ballR)) && 
 			(rectY <= (ballY+ballR)))
 		{
-			Sleep(100);
 			scores = 0;
+			displayScore(scores);
+			Sleep(100);
+			collision = true;
+			isPlused = true;
 			//outtextxy(300, 300, "Failed...");
 		}
-		if (rectX <= 0)
+		if (!collision && rectX <= ballX && !isPlused)
 		{
+			isPlused = true;
 			scores++;
 		}
-		TCHAR s[20];
-		sprintf_s(s, "%d", scores);
-		settextstyle(40, 0, _T("宋体"));
-		outtextxy(30, 30, s);
+		displayScore(scores);
+		collision = false;
 		FlushBatchDraw();
 		Sleep(10);
 	}
 	_getch();
 	closegraph();
 }
+
+void displayScore(int scores)
+{
+	TCHAR s[20];
+	sprintf_s(s, "%d", scores);
+	settextstyle(40, 0, _T("宋体"));
+	outtextxy(30, 30, s);
+}
+
 
 // 
 void snakeRotate()

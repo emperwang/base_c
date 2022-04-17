@@ -5,8 +5,8 @@ int main()
 {
 	//fallBall();
 	
-	//donotTouchBar();
-	snakeRotate();
+	donotTouchBar();
+	//snakeRotate();
 	_getch();
 	return 0;
 }

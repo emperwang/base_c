@@ -9,6 +9,8 @@ void fallBall();
 // 2:  ±ðÅö·½¿é
 void donotTouchBar();
 
+void displayScore(int scores);
+
 // 3: Ðý×ªÉß
 void snakeRotate();
 
