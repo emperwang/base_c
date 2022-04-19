@@ -16,6 +16,7 @@ int scores = 0;
 
 void Init()
 {
+	srand((unsigned)time(NULL));
 	// 初始化圆信息
 	for (int i = 0; i < 5; i++)
 	{
@@ -25,7 +26,7 @@ void Init()
 			r.setR(30);
 			r.setX(100 + i * 100);
 			r.setY(200 + j * 100);
-			r.setAngleNum(1);
+			r.setAngleNum(rand()%3);
 			rounds[i][j] = r;
 		}
 	}
