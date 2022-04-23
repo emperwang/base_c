@@ -22,16 +22,29 @@ void addOne(int* arr)
 	arr[1] += 1;
 }
 
+float convertIntToFloat(int a)
+{
+	float b = a;
+
+	while ( b >= 1.0)
+	{
+		b /= 10;
+	}
+	return b;
+}
 
 int main(void)
 {
-	int arr2[2] = { 0, 1 };
+	/*int arr2[2] = { 0, 1 };
 
 	addOne(arr2);
 	for (int i = 0; i < 2; i++)
 	{
 		std::cout << i << " = " << arr2[i] << std::endl;
-	}
+	}*/
+
+	float b = convertIntToFloat(1223423412);
+	std::cout << "b = " << b << std::endl;
 
 	system("pause");
 }
