@@ -13,3 +13,5 @@ void updateWithInput();
 void showMsg(int x, int y, COLORREF color, int fontHight, const TCHAR* msg);
 
 void changeTitle(const TCHAR* title);
+
+void addUfo();

@@ -4,12 +4,13 @@
 #include <time.h>
 #include "Bullet.h"
 #include "Util.h"
+#include "SmartUfo.h"
 
 #pragma comment(lib, "winmm.lib")
 
 
 // 全局图片资源
-IMAGE bkimg, rocketimg, blowup, bullet, ufo;
+IMAGE bkimg, rocketimg, blowup, bullet, ufoImg;
 
 // 背景图大小
 const int width = 560;
@@ -18,6 +19,7 @@ const int height = 800;
 Rocket rocket;
 // 子弹
 std::vector<Bullet> bullets;
+std::vector<SmartUfo> ufos;
 
 void playMusicOnce(const TCHAR* filename)
 {
@@ -36,7 +38,10 @@ void init()
 	loadimage(&rocketimg, _T("rocket.png"));
 	loadimage(&blowup, _T("blowup.png"));
 	loadimage(&bullet, _T("bullet.png"));
-	loadimage(&ufo, _T("ufo.png"));
+	loadimage(&ufoImg, _T("ufo.png"));
+	
+	addUfo();
+
 	changeTitle(_T("100秒"));
 	rocket.setRocketImg(rocketimg).setExplode(blowup).setX(width / 2 - rocket.getRadious()).setY(height / 2);
 	
@@ -44,6 +49,18 @@ void init()
 	mciSendString(_T("open game_music.mp3 alias bk"), nullptr, 0, nullptr);
 	mciSendString(_T("play bk repeat"),nullptr, 0, nullptr);
 	BeginBatchDraw();
+}
+
+void addUfo()
+{
+	SmartUfo ufo(ufoImg);
+	ufos.push_back(ufo);
+}
+
+void addBullet()
+{
+	Bullet but(bullet);
+	bullets.push_back(but);
 }
 
 void display()
@@ -64,6 +81,10 @@ void display()
 	{
 		bullets[i].show();
 	}
+	for (int i = 0; i < ufos.size(); i++)
+	{
+		ufos[i].show();
+	}
 	FlushBatchDraw();
 	sleep(10);
 }
@@ -74,7 +95,8 @@ void updateWithoutInput()
 	{
 		return;
 	}
-	static int lastOldTime = 0;
+	static int lastOldTimeForBullet = 0;
+	static int lastOldTimeForUfo = 0;
 	static int newSecond = 0;
 	static clock_t start = clock();
 	clock_t now = clock();
@@ -82,11 +104,15 @@ void updateWithoutInput()
 	// 更新生存时间
 	rocket.setLiveSecond(newSecond);
 	// 每两秒增加一个子弹
-	if ((newSecond - lastOldTime) >= 2)
+	if ((newSecond - lastOldTimeForBullet) >= 2)
 	{
-		lastOldTime = newSecond;
-		Bullet but(bullet);
-		bullets.push_back(but);
+		lastOldTimeForBullet = newSecond;
+		addBullet();
+	}
+	if ((newSecond - lastOldTimeForUfo) >= 10)
+	{
+		lastOldTimeForUfo = newSecond;
+		addUfo();
 	}
 	std::vector<Bullet>::iterator iterator = bullets.begin();
 	for (; iterator != bullets.end(); iterator++)
@@ -104,6 +130,21 @@ void updateWithoutInput()
 			(*iterator).update();
 		}
 	}
+	for (int i = 0; i < ufos.size(); i++)
+	{
+		// 检查是否碰撞
+		if (ufos[i].checkCollision(rocket))
+		{
+			playMusicOnce(_T("explode.mp3"));
+			rocket.die();
+			// 把当前子弹移动到其他地方, 避免重复碰撞
+			ufos[i].update(5, 5);
+		}
+		else
+		{
+			ufos[i].update();
+		}
+	}
 
 }
 
@@ -119,6 +160,10 @@ void updateWithInput()
 		{
 		case WM_MOUSEMOVE:
 			rocket.updatePostion(msg.x, msg.y);
+			for (int i = 0; i < ufos.size(); i++)
+			{
+				ufos[i].updateSpeedForRocket(rocket);
+			}
 			break;
 
 		case WM_RBUTTONDOWN:

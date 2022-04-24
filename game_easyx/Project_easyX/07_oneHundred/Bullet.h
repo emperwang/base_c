@@ -8,7 +8,7 @@
 
 class Bullet
 {
-private:
+protected:
 	IMAGE bulletImg;
 	//  Œª÷√–≈œ¢
 	int x=0;
