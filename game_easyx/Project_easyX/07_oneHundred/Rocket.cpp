@@ -9,10 +9,16 @@ void Rocket::show()
 	{
 		putimagePng(i * this->width * 0.7, 0, &this->rocketiImg);
 	}
-	putimagePng(this->x, this->y, &this->rocketiImg);
+	if (this->isAlive)
+	{
+		putimagePng(this->x, this->y, &this->rocketiImg);
+	}
+	else 
+	{
+		putimagePng(this->x, this->y, &this->explode);
+	}
 
 	// 显示生存时间
-
 	TCHAR buf[20];
 	setbkmode(TRANSPARENT);
 	sprintf_s(buf, "%d秒", this->liveSeconds);

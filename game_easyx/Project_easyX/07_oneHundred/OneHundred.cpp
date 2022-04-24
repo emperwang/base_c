@@ -51,6 +51,15 @@ void display()
 	cleardevice();
 	putimage(0, 0, &bkimg);
 	rocket.show();
+	// 显示游戏提示
+	if (!rocket.checkAlive() && rocket.getLife() >= 0)
+	{
+		showMsg(200, 400, RED, 40, _T("鼠标右击继续"));
+	}
+	if (!rocket.checkAlive() && rocket.getLife() < 0)
+	{
+		showMsg(200, 400, RED, 40, _T("游戏结束."));
+	}
 	for (int i = 0; i < bullets.size(); i++)
 	{
 		bullets[i].show();
@@ -61,6 +70,10 @@ void display()
 
 void updateWithoutInput()
 {
+	if (!rocket.checkAlive())
+	{
+		return;
+	}
 	static int lastOldTime = 0;
 	static int newSecond = 0;
 	static clock_t start = clock();
@@ -81,8 +94,8 @@ void updateWithoutInput()
 		// 检查是否碰撞
 		if ((*iterator).checkCollision(rocket))
 		{
-			rocket.updateWhenLostLife();
 			playMusicOnce(_T("explode.mp3"));
+			rocket.die();
 			// 把当前子弹移动到其他地方, 避免重复碰撞
 			(*iterator).update(5, 5);
 		}
@@ -105,8 +118,12 @@ void updateWithInput()
 		switch (msg.message)
 		{
 		case WM_MOUSEMOVE:
-			rocket.setX(msg.x);
-			rocket.setY(msg.y);
+			rocket.updatePostion(msg.x, msg.y);
+			break;
+
+		case WM_RBUTTONDOWN:
+			rocket.updateWhenLostLife();
+			rocket.resetAlive();
 			break;
 		}
 	}
@@ -117,3 +134,16 @@ void changeTitle(const TCHAR* title)
 	HWND hwnd = GetHWnd();
 	SetWindowText(hwnd, title);
 }
+
+
+void showMsg(int x, int y, COLORREF color,int fontHight, const TCHAR* msg)
+{
+	if (msg != nullptr)
+	{
+		setbkmode(TRANSPARENT);
+		settextcolor(color);
+		settextstyle(fontHight, 0, _T("宋体"));
+		outtextxy(x, y, msg);
+	}
+}
+

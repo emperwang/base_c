@@ -19,7 +19,8 @@ private:
 
 	//生存时间
 	int liveSeconds = 0;
-
+	// 是否存活
+	bool isAlive = true;
 public:
 	Rocket(){}
 	Rocket(IMAGE rc, IMAGE bom) : rocketiImg(rc), explode(bom)
@@ -55,6 +56,33 @@ public:
 		return y;
 	}
 
+	void updatePostion(int x, int y)
+	{
+		if (isAlive)
+		{
+			this->x = x;
+			this->y = y;
+		}
+	}
+
+	bool checkAlive()
+	{
+		return this->isAlive;
+	}
+
+	void resetAlive()
+	{
+		if (this->getLife() >= 0)
+		{
+			this->isAlive = true;
+		}
+	}
+
+	void die()
+	{
+		this->isAlive = false;
+	}
+
 	int getWidth()
 	{
 		return this->width;
@@ -88,6 +116,11 @@ public:
 	void updateWhenLostLife()
 	{
 		this->life--;
+	}
+
+	int getLife()
+	{
+		return this->life;
 	}
 
 	Rocket& setRocketImg(IMAGE& img)

@@ -2,6 +2,9 @@
 #include <graphics.h>
 #include <time.h>
 #include "Rocket.h"
+#include <cmath>
+
+#define  PI 3.1415926
 
 class Bullet
 {
@@ -42,8 +45,13 @@ public :
 		srand(time(nullptr));
 		this->x = rand() % screenWidth;
 		this->y = rand() % screenHeight;
-		this->vx = 1;
-		this->vy = 1;
+		//this->vx = 1;
+		//this->vy = 1;
+		// 为子弹生成一个随机方向的速度
+		float angle = (rand() / double(RAND_MAX) - 0.5) * 0.9 * PI;
+		float scalar = 2 * rand() / double(RAND_MAX) + 2;
+		this->vx = scalar * cos(angle);
+		this->vy = scalar * sin(angle);
 	}
 
 	void setBulletImg(IMAGE& img)
