@@ -13,4 +13,6 @@ void putimagePng(int img_x, int img_y, IMAGE* pSrcImg);
 
 void sleep(int ms);
 
+void showMsg(int x, int y, COLORREF color, int fontHight, const TCHAR* msg);
+
 #endif // _EAXYPNG_H

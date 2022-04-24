@@ -64,3 +64,15 @@ void sleep(int ms)
 	}
 	oldtime = GetTickCount();
 }
+
+
+void showMsg(int x, int y, COLORREF color, int fontHight, const TCHAR* msg)
+{
+	if (msg != nullptr)
+	{
+		setbkmode(TRANSPARENT);
+		settextcolor(color);
+		settextstyle(fontHight, 0, _T("ËÎÌו"));
+		outtextxy(x, y, msg);
+	}
+}
