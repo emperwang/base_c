@@ -6,6 +6,8 @@ int main(int argc, char** argv)
 	while (1)
 	{
 		show();
+		updateWithInput();
+		updateWithoutInput();
 	}
 	return 0;
 }

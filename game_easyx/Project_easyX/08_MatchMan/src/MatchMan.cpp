@@ -1,6 +1,8 @@
 #include "MatchMan.h"
 #include "Util.h"
 #include "Player.h"
+#include <conio.h>
+
 extern const int WIDTH = 800;
 extern const int HEIGHT = 600;
 
@@ -24,6 +26,35 @@ void show()
 	player.show();
 	FlushBatchDraw();
 	sleep(10);
+}
+
+void updateWithInput()
+{
+	player.standStill();
+	if (_kbhit())
+	{
+		if (GetAsyncKeyState(VK_LEFT) || GetAsyncKeyState('A'))
+		{
+			player.runLeftStatus();
+		}
+		if (GetAsyncKeyState(VK_RIGHT) || GetAsyncKeyState('D'))
+		{
+			player.runRightStatus();
+		}
+		if (GetAsyncKeyState(VK_UP) || GetAsyncKeyState('W'))
+		{
+			player.updateJumpStatus();
+		}
+		if (GetAsyncKeyState(VK_DOWN) || GetAsyncKeyState('S'))
+		{
+			//player.setButtonY(player.getButtonY() + player.getVy());
+		}
+	}
+}
+
+void updateWithoutInput()
+{
+	player.updateYCoordinate();
 }
 
 void changeTitle(const TCHAR* title)
