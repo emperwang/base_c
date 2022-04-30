@@ -1,15 +1,32 @@
 #include "Player.h"
 #include "Util.h"
 #include <cstdio>
+#include <iostream>
 
 extern const int WIDTH;
 extern const int HEIGHT;
 
+// for debug
+void Player::outputPostion()
+{
+	setbkmode(TRANSPARENT);
+	settextcolor(RGB(10, 20, 120));
+	settextstyle(20, 0, "宋体");
+	TCHAR buf[20];
+	_stprintf_s(buf, "X: %f", this->leftX);
+	outtextxy(WIDTH - 100, 20, buf);
+	memset(buf, 0, 20);
+	_stprintf_s(buf, "Y: %f", this->buttomY);
+	outtextxy(WIDTH - 100, 40, buf);
+}
+
 void Player::show()
 {
+	outputPostion();
 	updateYCoordinate();
-	putimagePng(leftX, buttomY, &this->imShow);
+	putimagePng(leftX, buttomY - this->height, &this->imShow);
 }
+
 
 void Player::initialize()
 {
@@ -34,11 +51,11 @@ void Player::initialize()
 	this->imShow = this->standRight;
 	this->width = imShow.getwidth();
 	this->height = imShow.getheight();
-	update(WIDTH / 2 - this->width / 2, HEIGHT / 2 - this->height);
+	update(WIDTH / 2, HEIGHT / 2 );
 
 	// 初始化移动速度
 	vx = 5;
-	vy = 5;
+	vy = 0;
 	gravity = 2;
 }
 
@@ -83,13 +100,20 @@ void Player::updateJumpStatus()
 	}
 }
 
-void Player::runRightStatus()
+void Player::runRightStatus(Scene& scene)
 {
 	leftX += vx;
 	//奔跑相关处理
-	if (playStatus == JUMPLEFT || playStatus == JUMPRIGHT)
+	/*if (playStatus == JUMPLEFT || playStatus == JUMPRIGHT)
 	{
 		imShow = jumpRight;
+		return;
+	}*/
+
+	if (isNotOnAllLand(scene.getLands(), vy))
+	{
+		imShow = jumpRight;
+		playStatus = RUNRIGHT;
 		return;
 	}
 
@@ -109,14 +133,21 @@ void Player::runRightStatus()
 	imShow = runRight[runIdx];
 }
 
-void Player::runLeftStatus()
+void Player::runLeftStatus(Scene& scene)
 {
 	leftX -= vx;
 
 	//奔跑相关处理
-	if (playStatus == JUMPLEFT || playStatus == JUMPRIGHT)
+	/*if (playStatus == JUMPLEFT || playStatus == JUMPRIGHT)
 	{
 		imShow = jumpLeft;
+		return;
+	}*/
+
+	if (isNotOnAllLand(scene.getLands(), vy))
+	{
+		imShow = jumpLeft;
+		playStatus = RUNLEFT;
 		return;
 	}
 
@@ -157,12 +188,43 @@ void Player::updateYCoordinate()
 	}
 }
 
-int Player::getLeftX()
+int Player::isOnLand(const Land& land, float speedy)
+{
+	float rightX = this->leftX + width;
+
+	// y方向上小于0, 表示正在向上运动, 不需要考虑速度的影响
+	if (speedy <= 0)
+	{
+		speedy = 0;
+	}
+
+	if ((land.getLeftX() - leftX) <= (width *0.6) && (rightX - land.getRightX()) <= (width * 0.6)
+		&& abs(buttomY - land.getTopY()) <= (5 + speedy))
+	{
+		return 1;
+	}
+	else
+	{
+		return 0;
+	}
+}
+
+int Player::isNotOnAllLand(const std::vector<Land>& lands, float speed)
+{
+	for (int i = 0; i < lands.size(); i++)
+	{
+		if (isOnLand(lands[i], speed))
+			return 0;
+	}
+	return 1;
+}
+
+float Player::getLeftX()
 {
 	return this->leftX;
 }
 
-void Player::setLeftX(int left)
+void Player::setLeftX(float left)
 {
 	this->leftX = left;
 }
@@ -172,27 +234,27 @@ int Player::getButtonY()
 	return this->buttomY;
 }
 
-void Player::setButtonY(int button)
+void Player::setButtonY(float button)
 {
 	this->buttomY = button;
 }
 
-int Player::getVx()
+float Player::getVx()
 {
 	return this->vx;
 }
 
-void Player::setVx(int speedX)
+void Player::setVx(float speedX)
 {
 	this->vx = speedX;
 }
 
-int Player::getVy()
+float Player::getVy()
 {
 	return this->vy;
 }
 
-void Player::setVy(int speedy)
+void Player::setVy(float speedy)
 {
 	this->vy = speedy;
 }

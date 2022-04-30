@@ -1,6 +1,8 @@
 #pragma once
 #include <graphics.h>
 #include <vector>
+#include "Land.h"
+#include "Scene.h"
 
 class Player
 {
@@ -23,19 +25,21 @@ private:
 	std::vector<IMAGE> runLeft;
 	std::vector<IMAGE> runRight;
 	int runIdx = 0;
-	PlayStatus playStatus = STANDLEFT;
+	Player::PlayStatus playStatus = STANDRIGHT;
 
 	//要显示的位置
-	int leftX, buttomY;
+	float leftX, buttomY;
 	int width, height;
 	// 移动速度
-	int vx, vy;
+	float vx, vy;
 	//重力加速度
-	int gravity;
+	float gravity;
 public:
 	Player(): leftX(0), buttomY(0),width(0), height(0), vx(0), vy(0), gravity(0)
 	{
 	}
+
+	~Player(){}
 	void show();
 
 	void initialize();
@@ -48,29 +52,34 @@ public:
 
 	void updateJumpStatus();
 
-	void runRightStatus();
+	void runRightStatus(Scene& scene);
 
-	void runLeftStatus();
+	void runLeftStatus(Scene& scene);
 
 	void updateYCoordinate();
 
-	int getLeftX();
+	// 判断player是否在地面上
+	int isOnLand(const Land& land, float speed);
 
-	void setLeftX(int left);
+	int isNotOnAllLand(const std::vector<Land>& lands, float speed);
+
+	float getLeftX();
+
+	void setLeftX(float left);
 
 	int getButtonY();
 
-	void setButtonY(int button);
+	void setButtonY(float button);
 
-	int getVx();
+	float getVx();
 
-	void setVx(int speedX);
+	void setVx(float speedX);
 
-	int getVy();
+	float getVy();
 
-	void setVy(int speedy);
+	void setVy(float speedy);
 
 private:
-
+	void outputPostion();
 };
 

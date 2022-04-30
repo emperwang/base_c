@@ -2,27 +2,31 @@
 #include "Util.h"
 #include "Player.h"
 #include <conio.h>
+#include "Scene.h"
 
 extern const int WIDTH = 800;
 extern const int HEIGHT = 600;
 
-IMAGE bk, land;
+//IMAGE bk, land;
 Player player;
+Scene scene;
 
 void init()
 {
 	initgraph(WIDTH, HEIGHT);
 	player.initialize();
+	scene.initialize();
 	changeTitle(_T("»ð²ñÈË"));
-	loadimage(&bk, _T("assets/picture/landscape1.png"));
-	loadimage(&land, _T("assets/picture/land.png"));
+	//loadimage(&bk, _T("assets/picture/landscape1.png"));
+	//loadimage(&land, _T("assets/picture/land.png"));
 	BeginBatchDraw();
 }
 void show()
 {
 	cleardevice();
-	putimagePng(0, 0, &bk);
-	putimagePng(WIDTH /2 - land.getwidth()/2, HEIGHT / 2, &land);
+	//putimagePng(0, 0, &bk);
+	//putimagePng(WIDTH /2 - land.getwidth()/2, HEIGHT / 2, &land);
+	scene.show();
 	player.show();
 	FlushBatchDraw();
 	sleep(10);
@@ -35,11 +39,11 @@ void updateWithInput()
 	{
 		if (GetAsyncKeyState(VK_LEFT) || GetAsyncKeyState('A'))
 		{
-			player.runLeftStatus();
+			player.runLeftStatus(scene);
 		}
 		if (GetAsyncKeyState(VK_RIGHT) || GetAsyncKeyState('D'))
 		{
-			player.runRightStatus();
+			player.runRightStatus(scene);
 		}
 		if (GetAsyncKeyState(VK_UP) || GetAsyncKeyState('W'))
 		{
