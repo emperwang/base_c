@@ -56,7 +56,7 @@ public:
 
 	void runLeftStatus(Scene& scene);
 
-	void updateYCoordinate();
+	void updateYCoordinate(Scene& scene);
 
 	// 判断player是否在地面上
 	int isOnLand(const Land& land, float speed);

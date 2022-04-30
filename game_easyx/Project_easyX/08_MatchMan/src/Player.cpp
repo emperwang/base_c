@@ -23,7 +23,6 @@ void Player::outputPostion()
 void Player::show()
 {
 	outputPostion();
-	updateYCoordinate();
 	putimagePng(leftX, buttomY - this->height, &this->imShow);
 }
 
@@ -113,7 +112,7 @@ void Player::runRightStatus(Scene& scene)
 	if (isNotOnAllLand(scene.getLands(), vy))
 	{
 		imShow = jumpRight;
-		playStatus = RUNRIGHT;
+		playStatus = JUMPRIGHT;
 		return;
 	}
 
@@ -147,7 +146,7 @@ void Player::runLeftStatus(Scene& scene)
 	if (isNotOnAllLand(scene.getLands(), vy))
 	{
 		imShow = jumpLeft;
-		playStatus = RUNLEFT;
+		playStatus = JUMPLEFT;
 		return;
 	}
 
@@ -167,22 +166,27 @@ void Player::runLeftStatus(Scene& scene)
 	imShow = runLeft[runIdx];
 }
 
-void Player::updateYCoordinate()
+// 起跳后,要判断是否落在地面上
+void Player::updateYCoordinate(Scene& scene)
 {
 	if (playStatus == JUMPLEFT || playStatus == JUMPRIGHT)
 	{
 		vy += gravity;
 		buttomY += vy;
-		if (buttomY > (HEIGHT / 2 - this->height))
+		for (int i = 0; i < scene.getLands().size(); i++)
 		{
-			buttomY = HEIGHT / 2 - this->height;
-			if (playStatus == JUMPRIGHT)
+			if (isOnLand(scene.getLands()[i], vy))
 			{
-				playStatus = STANDRIGHT;
-			}
-			else if (playStatus == JUMPLEFT)
-			{
-				playStatus = STANDLEFT;
+				buttomY = scene.getLands()[i].getTopY();
+				if (playStatus == JUMPLEFT)
+				{
+					playStatus = STANDLEFT;
+				}
+				if (playStatus == JUMPRIGHT)
+				{
+					playStatus = STANDRIGHT;
+				}
+				break;
 			}
 		}
 	}

@@ -17,15 +17,11 @@ void init()
 	player.initialize();
 	scene.initialize();
 	changeTitle(_T("»ð²ñÈË"));
-	//loadimage(&bk, _T("assets/picture/landscape1.png"));
-	//loadimage(&land, _T("assets/picture/land.png"));
 	BeginBatchDraw();
 }
 void show()
 {
 	cleardevice();
-	//putimagePng(0, 0, &bk);
-	//putimagePng(WIDTH /2 - land.getwidth()/2, HEIGHT / 2, &land);
 	scene.show();
 	player.show();
 	FlushBatchDraw();
@@ -58,7 +54,7 @@ void updateWithInput()
 
 void updateWithoutInput()
 {
-	player.updateYCoordinate();
+	player.updateYCoordinate(scene);
 }
 
 void changeTitle(const TCHAR* title)
