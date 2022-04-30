@@ -3,6 +3,7 @@
 #include "Player.h"
 #include <conio.h>
 #include "Scene.h"
+#include <ctime>
 
 extern const int WIDTH = 800;
 extern const int HEIGHT = 600;
@@ -13,6 +14,7 @@ Scene scene;
 
 void init()
 {
+	srand(time(nullptr));
 	initgraph(WIDTH, HEIGHT);
 	player.initialize();
 	scene.initialize();
@@ -22,10 +24,11 @@ void init()
 void show()
 {
 	cleardevice();
-	scene.show();
+	//scene.show();
+	scene.show(player.getLeftX()-WIDTH/2, player.getButtonY()-HEIGHT/2);
 	player.show();
 	FlushBatchDraw();
-	sleep(10);
+	sleep(30);
 }
 
 void updateWithInput()

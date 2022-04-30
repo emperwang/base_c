@@ -23,12 +23,15 @@ void Player::outputPostion()
 void Player::show()
 {
 	outputPostion();
-	putimagePng(leftX, buttomY - this->height, &this->imShow);
+	//putimagePng(leftX, buttomY - this->height, &this->imShow);
+	putimagePng(WIDTH/2, HEIGHT/2 - this->height, &this->imShow);
 }
 
 
 void Player::initialize()
 {
+	runLeft.clear();
+	runRight.clear();
 	loadimage(&this->standLeft, _T("./assets/picture/standleft.png"));
 	loadimage(&this->standRight, _T("./assets/picture/standright.png"));
 	loadimage(&this->jumpLeft, _T("./assets/picture/jumpleft.png"));

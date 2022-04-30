@@ -19,6 +19,8 @@ public:
 
 	void draw();
 
+	void draw(float px, float py);
+
 	Land():leftX(0), rightX(0), topY(0), landWidht(0), landHeight(0){}
 
 	~Land(){}

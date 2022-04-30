@@ -20,6 +20,11 @@ void Land::draw()
 	putimagePng(leftX, topY, &imShow);
 }
 
+void Land::draw(float px, float py)
+{
+	putimagePng(leftX-px, topY - py, &imShow);
+}
+
 float Land::getLeftX() const
 {
 	return leftX;
