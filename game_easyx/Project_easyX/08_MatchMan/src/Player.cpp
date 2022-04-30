@@ -2,6 +2,7 @@
 #include "Util.h"
 #include <cstdio>
 #include <iostream>
+#include <conio.h>
 
 extern const int WIDTH;
 extern const int HEIGHT;
@@ -14,14 +15,24 @@ void Player::outputPostion()
 	settextstyle(20, 0, "宋体");
 	TCHAR buf[20];
 	_stprintf_s(buf, "X: %f", this->leftX);
-	outtextxy(WIDTH - 100, 20, buf);
+	outtextxy(WIDTH - 100, 0, buf);
 	memset(buf, 0, 20);
 	_stprintf_s(buf, "Y: %f", this->buttomY);
-	outtextxy(WIDTH - 100, 40, buf);
+	outtextxy(WIDTH - 100, 20, buf);
 }
 
 void Player::show()
 {
+	if (fail)
+	{
+		showMsg((WIDTH / 2 - 100), HEIGHT / 2, RED, 50, "游戏失败");
+		int a = _getch();
+		if (a == 'g')
+		{
+			fail = false;
+			initialize();
+		}
+	}
 	outputPostion();
 	//putimagePng(leftX, buttomY - this->height, &this->imShow);
 	putimagePng(WIDTH/2, HEIGHT/2 - this->height, &this->imShow);
@@ -192,6 +203,25 @@ void Player::updateYCoordinate(Scene& scene)
 				break;
 			}
 		}
+	}
+}
+
+void Player::checkSuccess(Scene& scene)
+{
+
+	// 跑到最后一个land 则胜利
+	const std::vector<Land> lands = scene.getLands();
+	Land lastLand = lands.at(lands.size() - 1);
+	if (this->leftX > lastLand.getLeftX() && abs(this->buttomY - lastLand.getTopY()) <= 2)
+	{
+		// win
+		scene.nextLevel();
+		scene.initialize();
+		initialize();
+	}
+	else if(this->buttomY >= 1.5 * HEIGHT)  // 掉落深渊,则失败
+	{
+		fail = true;
 	}
 }
 

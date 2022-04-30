@@ -34,6 +34,8 @@ private:
 	float vx, vy;
 	//重力加速度
 	float gravity;
+	//是否失败
+	bool fail = false;
 public:
 	Player(): leftX(0), buttomY(0),width(0), height(0), vx(0), vy(0), gravity(0)
 	{
@@ -57,6 +59,8 @@ public:
 	void runLeftStatus(Scene& scene);
 
 	void updateYCoordinate(Scene& scene);
+
+	void checkSuccess(Scene& scene);
 
 	// 判断player是否在地面上
 	int isOnLand(const Land& land, float speed);

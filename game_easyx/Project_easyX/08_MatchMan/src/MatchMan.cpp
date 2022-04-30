@@ -58,6 +58,7 @@ void updateWithInput()
 void updateWithoutInput()
 {
 	player.updateYCoordinate(scene);
+	player.checkSuccess(scene);
 }
 
 void changeTitle(const TCHAR* title)
