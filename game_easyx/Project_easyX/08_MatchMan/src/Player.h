@@ -31,7 +31,7 @@ private:
 	// ÒÆ¶¯ËÙ¶È
 	int vx, vy;
 public:
-	Player()
+	Player(): leftX(0), buttomY(0),width(0), height(0), vx(0), vy(0)
 	{
 	}
 	void show();
