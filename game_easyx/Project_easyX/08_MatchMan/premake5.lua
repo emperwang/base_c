@@ -13,7 +13,11 @@ project "08_MatchMan"
 		"src/**.cpp"
 	}
 
-	--includedirs
+	includedirs
+	{
+		"src",
+		"vendor/spdlog/include"
+	}
 
 	--links
 

@@ -2,7 +2,7 @@
 *.d
 .idea
 cmake-build-debug
-
+logs
 # Object files
 *.o
 *.ko

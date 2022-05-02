@@ -3,6 +3,9 @@
 #include <vector>
 #include "Land.h"
 #include "Scene.h"
+#include "spdlog/spdlog.h"
+#include "spdlog/sinks/stdout_color_sinks.h"
+#include "spdlog/sinks/rotating_file_sink.h"
 
 class Player
 {
@@ -36,6 +39,13 @@ private:
 	float gravity;
 	// «∑Ò ß∞‹
 	bool fail = false;
+	
+	// logger
+	std::shared_ptr<spdlog::logger> logger = spdlog::stdout_color_mt("console");
+
+	//file logger
+	// 1048576 * 5 = 5M
+	std::shared_ptr<spdlog::logger> filelog = spdlog::rotating_logger_mt("route", "logs/rotating.txt",1048576 * 5, 3);
 public:
 	Player(): leftX(0), buttomY(0),width(0), height(0), vx(0), vy(0), gravity(0)
 	{

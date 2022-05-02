@@ -34,6 +34,8 @@ void Player::show()
 		}
 	}
 	outputPostion();
+	spdlog::get("console")->info("leftx {}, button: {}", leftX, buttomY);
+	spdlog::get("route")->info("leftx {}, button: {}", leftX, buttomY);
 	//putimagePng(leftX, buttomY - this->height, &this->imShow);
 	putimagePng(WIDTH/2, HEIGHT/2 - this->height, &this->imShow);
 }
