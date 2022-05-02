@@ -76,7 +76,7 @@ build
 temp
 Debug
 Release
-
+*.sln
 #idea
 .idea
 cmake-build-debug
