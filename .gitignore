@@ -71,7 +71,8 @@ ipch
 *.vcxproj
 *.filters
 *.opensdf
-bin
+bin-int
+build
 temp
 Debug
 Release
