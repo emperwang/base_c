@@ -34,11 +34,11 @@ void init()
 {
 	srand(time(nullptr));
 	initgraph(width, height);
-	loadimage(&bkimg, _T("background.png"));
-	loadimage(&rocketimg, _T("rocket.png"));
-	loadimage(&blowup, _T("blowup.png"));
-	loadimage(&bullet, _T("bullet.png"));
-	loadimage(&ufoImg, _T("ufo.png"));
+	loadimage(&bkimg, _T("asset/picture/background.png"));
+	loadimage(&rocketimg, _T("asset/picture/rocket.png"));
+	loadimage(&blowup, _T("asset/picture/blowup.png"));
+	loadimage(&bullet, _T("asset/picture/bullet.png"));
+	loadimage(&ufoImg, _T("asset/picture/ufo.png"));
 	
 	addUfo();
 
@@ -46,7 +46,7 @@ void init()
 	rocket.setRocketImg(rocketimg).setExplode(blowup).setX(width / 2 - rocket.getRadious()).setY(height / 2);
 	
 	// ´ò¿ª±³¾°ÒôÀÖ
-	mciSendString(_T("open game_music.mp3 alias bk"), nullptr, 0, nullptr);
+	mciSendString(_T("open asset/picture/game_music.mp3 alias bk"), nullptr, 0, nullptr);
 	mciSendString(_T("play bk repeat"),nullptr, 0, nullptr);
 	BeginBatchDraw();
 }

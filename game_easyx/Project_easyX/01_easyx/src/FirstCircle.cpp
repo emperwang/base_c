@@ -182,7 +182,7 @@ void changetitle()
 
 void playMp3()
 {
-	mciSendString("open ./ThatGirl.mp3 alias BGM", 0, 0, 0);
+	mciSendString("open assets/music/ThatGirl.mp3 alias BGM", 0, 0, 0);
 	//mciSendString("play ./ThatGirl.mp3", 0, 0, 0);
 	mciSendString("play BGM repeat", 0, 0, 0);
 	//mciSendString("close BGM",0,0,0);

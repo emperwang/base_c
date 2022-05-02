@@ -9,8 +9,6 @@ project "07_oneHundred"
 
 	files 
 	{
-		"**.h",
-		"**.cpp",
 		"src/**.h",
 		"src/**.cpp"
 	}

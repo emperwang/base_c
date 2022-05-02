@@ -9,8 +9,6 @@ project "06_needle"
 
 	files 
 	{
-		"**.h",
-		"**.cpp",
 		"src/**.h",
 		"src/**.cpp"
 	}
