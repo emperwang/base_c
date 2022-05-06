@@ -72,7 +72,7 @@ void main() {
 
 	glEnable(GL_DEPTH_TEST);
 
-	Shader shader("1_model_load.vs", "1_model_load.fs");
+	Shader shader("assets/shader/1_model_load.vs", "assets/shader/1_model_load.fs");
 
 	//Model ourModel("E:/code-workSpace/project-C/base-C/opengl/nanosuit/nanosuit.obj");
 

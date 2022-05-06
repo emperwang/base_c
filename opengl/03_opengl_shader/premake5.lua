@@ -10,7 +10,7 @@ project "03_opengl_shader"
 	{
 		"**.h",
 		"**.cpp",
-		"../vendor/glm/glm/**.hpp"
+--		"../vendor/glm/glm/**.hpp"
 	}
 	
 	includedirs 

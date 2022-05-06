@@ -10,9 +10,9 @@ project "01_opengl"
 	{
 		"**.h",
 		"**.cpp",
-		"../vendor/glad33/**.h",
-		"../vendor/glad33/**.c",
-		"../vendor/stb/*.h"
+--		"../vendor/glad33/**.h",
+--		"../vendor/glad33/**.c",
+--		"../vendor/stb/*.h"
 	}
 
 

@@ -10,7 +10,7 @@ project "04_opengl_camera"
 	{
 		"**.h",
 		"**.cpp",
-		"../vendor/glm/glm/**.hpp"
+--		"../vendor/glm/glm/**.hpp"
 	}
 
 	includedirs

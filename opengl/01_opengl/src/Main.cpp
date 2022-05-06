@@ -1,3 +1,4 @@
+#define GLFW_INCLUDE_NONE
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <stb_image.h>
@@ -117,11 +118,11 @@ void main() {
 	// max attributes
 	int nr_attributes_count;
 	glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nr_attributes_count);
-	std::cout << "Maxinum nr of vertex attributes support: " << nr_attributes_count << std::endl;
+	std::cout << "Maximum number of vertex attributes support: " << nr_attributes_count << std::endl;
 
 	// load image
 	int width, height, nr_channels;
-	unsigned char* data = stbi_load("container.jpg", &width, &height, &nr_channels, 0);
+	unsigned char* data = stbi_load("assets/picture/container.jpg", &width, &height, &nr_channels, 0);
 	std::cout << "width: " << width << ", height: " << height << ", channels: " << nr_channels << std::endl;
 
 

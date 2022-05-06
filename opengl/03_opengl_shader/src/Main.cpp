@@ -61,9 +61,9 @@ void main() {
 	// max attributes
 	int nr_attributes;
 	glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nr_attributes);
-	std::cout << "Maximun nr of vertex attributes supported: " << nr_attributes << std::endl;
+	std::cout << "Maximun number of vertex attributes supported: " << nr_attributes << std::endl;
 
-	Shader shader("shader_3d.vs", "shader.fs");
+	Shader shader("assets/shader/shader_3d.vs", "assets/shader/shader.fs");
 
 
 	float vertices[] = {
@@ -176,7 +176,7 @@ void main() {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-	std::string img_path = "container.jpg";
+	std::string img_path = "assets/picture/container.jpg";
 	int img_width, img_height, img_nr_channels;
 	
 	stbi_set_flip_vertically_on_load(true);
@@ -202,7 +202,7 @@ void main() {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-	std::string img2_path = "awesomeface.png";
+	std::string img2_path = "assets/picture/awesomeface.png";
 	img_data = stbi_load(img2_path.c_str(), &img_width, &img_height, &img_nr_channels, 0);
 	if (img_data) {
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, img_width, img_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, img_data);
