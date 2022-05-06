@@ -80,11 +80,15 @@ void main() {
 	glAttachShader(shader_program, vertex_shader);
 	glAttachShader(shader_program, fragment_shader);
 	glLinkProgram(shader_program);
-
+	glValidateProgram(shader_program);
 	glGetProgramiv(shader_program, GL_LINK_STATUS, &success);
 	if(!success) {
-		glGetProgramInfoLog(shader_program, 512, NULL, info_log);
-		std::cout << "Error: Shader:Program:Link failed.\n" << info_log << std::endl;
+		int logLength;
+		glGetProgramiv(shader_program, GL_INFO_LOG_LENGTH, &logLength);
+		// 在栈上动态生成array, 并用此array来存放错误日志
+		char* logbuf = (char*)alloca(logLength);
+		glGetProgramInfoLog(shader_program, logLength, NULL, logbuf);
+		std::cout << "Error: Shader:Program:Link failed.\n" << logbuf << std::endl;
 		return;
 	}
 
