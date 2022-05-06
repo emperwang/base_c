@@ -1,3 +1,18 @@
 [submodule "game_easyx/Project_easyX/08_MatchMan/vendor/spdlog"]
 	path = game_easyx/Project_easyX/08_MatchMan/vendor/spdlog
 	url = https://gitclone.com/github.com/gabime/spdlog.git
+[submodule "opengl/vendor/glm"]
+	path = opengl/vendor/glm
+	url = https://gitclone.com/github.com/g-truc/glm.git
+[submodule "opengl/vendor/stb"]
+	path = opengl/vendor/stb
+	url = https://gitclone.com/github.com//nothings/stb.git
+[submodule "opengl/vendor/GLFW"]
+	path = opengl/vendor/GLFW
+	url = https://gitclone.com/github.com/glfw/glfw.git
+[submodule "opengl/vendor/spdlog"]
+	path = opengl/vendor/spdlog
+	url = https://gitclone.com/github.com/gabime/spdlog.git
+[submodule "opengl/vendor/ImGui"]
+	path = opengl/vendor/ImGui
+	url = https://gitclone.com/github.com/ocornut/imgui.git

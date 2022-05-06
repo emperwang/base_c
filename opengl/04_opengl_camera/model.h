@@ -7,9 +7,9 @@
 
 #include <stb_image.h>
 
-#include <assimp/Importer.hpp>
-#include <assimp/scene.h>
-#include <assimp/postprocess.h>
+//#include <assimp/Importer.hpp>
+//#include <assimp/scene.h>
+//#include <assimp/postprocess.h>
 
 #include <string>
 #include <vector>
@@ -20,7 +20,7 @@
 
 unsigned int LoadTextureFromFile(const char* path, const std::string &directory, bool gamma = false);
 
-class Model {
+/*class Model {
 public:
 	// model data
 	std::vector<Texture>  texture_loaded;
@@ -182,7 +182,7 @@ private:
 		return textures;
 	}
 	
-};
+};*/
 
 unsigned int LoadTextureFromFile(const char* path, const std::string &directory, bool gamma) {
 	std::string filename = std::string(path);
@@ -217,7 +217,7 @@ unsigned int LoadTextureFromFile(const char* path, const std::string &directory,
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	}
 	else {
-		std::cout << "Textture failed to load at path: " << path << std::endl;
+		std::cout << "Texture failed to load at path: " << path << std::endl;
 	}
 	stbi_image_free(data);
 	return textureID;

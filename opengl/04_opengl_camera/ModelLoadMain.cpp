@@ -75,7 +75,7 @@ void main() {
 
 	//Model ourModel("E:/code-workSpace/project-C/base-C/opengl/nanosuit/nanosuit.obj");
 
-	Model ourModel("C:/Users/Sparks/Downloads/project-release/PRD_T206580_001_AbsorberL.stl");
+	//Model ourModel("C:/Users/Sparks/Downloads/project-release/PRD_T206580_001_AbsorberL.stl");
 
 	while (!glfwWindowShouldClose(window)) {
 		float current_frame = static_cast<float>(glfwGetTime());
@@ -101,7 +101,7 @@ void main() {
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		shader.setMat4("model", model);
 		
-		ourModel.Draw(shader);
+		//ourModel.Draw(shader);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
