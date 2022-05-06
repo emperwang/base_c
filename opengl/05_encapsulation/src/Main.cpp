@@ -4,28 +4,9 @@
 #include <stb_image.h>
 #include <iostream>
 
-// __debugbreak针对 MVCS 打断点
-#define ASSERT(x)  if(!(x)) __debugbreak();
-
-#define GLCall(x)  GLClearError();  x;  ASSERT(GLLogCall(#x, __FILE__,__LINE__));
-
-
-static void GLClearError()
-{
-	while (glGetError() != GL_NO_ERROR);
-}
-
-// 有异常,则返回false
-static bool GLLogCall(const char* function, const char* file, const int line)
-{
-	while (GLenum error = glGetError())
-	{
-		std::cout << "[OpenGl error] ( 0x" << std::hex << error << " ). " << function << " "<< file << ":" << std::dec<< line << std::endl;
-		return false;
-	}
-
-	return true;
-}
+#include "Render.h"
+#include "VertexBuffer.h"
+#include "IndexBuffer.h"
 
 const char *vertex_shader_source = "#version 330 core \n"
 "layout(location = 0) in vec3 aPos;		\n"
@@ -131,48 +112,36 @@ void main() {
 		1, 2, 3			// second triangle
 	};
 
-	unsigned int EBO, VAO, VBO;		// element buffer object
+	unsigned int  VAO;		// element buffer object
 	GLCall(glGenVertexArrays(1, &VAO));
-	GLCall(glGenBuffers(1, &EBO));
-	GLCall(glGenBuffers(1, &VBO));
-
 	GLCall(glBindVertexArray(VAO));
+	{
+		VertexBuffer vbuffer(vertices, sizeof(vertices));
+		GLCall(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0));
+		GLCall(glEnableVertexAttribArray(0));
 
-	GLCall(glBindBuffer(GL_ARRAY_BUFFER, VBO));
-	GLCall(glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW));
+		IndexBuffer ibuffer(indices, 6);
 
-	GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO));
-	GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW));
+		//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		GLCall(glPolygonMode(GL_FRONT_AND_BACK, GL_LINE));
 
-	GLCall(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0));
-	GLCall(glEnableVertexAttribArray(0));
+		while (!glfwWindowShouldClose(window)) {
+			process_input(window);
 
-	// unbind
-	GLCall(glBindBuffer(GL_ARRAY_BUFFER, 0));
-	GLCall(glBindVertexArray(0));
+			GLCall(glClearColor(0.2f, 0.3f, 0.3f, 1.0f));
+			GLCall(glClear(GL_COLOR_BUFFER_BIT));
 
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	GLCall(glPolygonMode(GL_FRONT_AND_BACK, GL_LINE));
+			GLCall(glUseProgram(shader_program));
+			GLCall(glBindVertexArray(VAO));
 
-	while (!glfwWindowShouldClose(window)) {
-		process_input(window);
+			GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0));
 
-		GLCall(glClearColor(0.2f, 0.3f, 0.3f, 1.0f));
-		GLCall(glClear(GL_COLOR_BUFFER_BIT));
-		
-		GLCall(glUseProgram(shader_program));
-		GLCall(glBindVertexArray(VAO));
-		
-		GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0));
+			GLCall(glfwSwapBuffers(window));
+			GLCall(glfwPollEvents());
 
-		GLCall(glfwSwapBuffers(window));
-		GLCall(glfwPollEvents());
-
+		}
 	}
-
 	GLCall(glDeleteVertexArrays(1, &VAO));
-	GLCall(glDeleteBuffers(1, &VBO));
-	GLCall(glDeleteBuffers(1, &EBO));
 	GLCall(glDeleteProgram(shader_program));
 
 	glfwTerminate();
