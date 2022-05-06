@@ -23,8 +23,8 @@ void process_input(GLFWwindow *window);
 void main() {
 
 	glfwInit();
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+	//glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+	//glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 
 #ifdef _MAC_
 	glfwWindowHin(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
@@ -92,7 +92,9 @@ void main() {
 	glDeleteShader(vertex_shader);
 	glDeleteShader(fragment_shader);
 
-
+	//get opengl version
+	const unsigned char * version =  glGetString(GL_VERSION);
+	std::cout << "version: " << version << std::endl;
 	float vertices[] = {
 		-0.5f, -0.5f, 0.0f,
 		0.5f, -0.5f, 0.0f,
