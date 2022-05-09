@@ -1,5 +1,7 @@
 #include "TestClearColor.h"
-
+#include "Render.h"
+#include "glad/glad.h"
+#include "imgui.h"
 
 namespace TkTest {
 

@@ -1,8 +1,5 @@
 #pragma once
 #include "Test.h"
-#include "Render.h"
-#include "glad/glad.h"
-#include "imgui.h"
 
 namespace TkTest {
 
