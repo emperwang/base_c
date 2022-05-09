@@ -68,7 +68,7 @@ void main() {
 		layout.Push<float>(3);
 		layout.Push<float>(2);
 		Vao.AddBuffer(vbuffer, layout);
-		shader.SetUniform4f("color", 0.8f, 0.3f, 0.8f, 1.0f);
+		//shader.SetUniform4f("color", 0.8f, 0.3f, 0.8f, 1.0f);
 		IndexBuffer ibuffer(indices, 6);
 
 		Texture texture("assets/picture/container.jpg");
@@ -92,7 +92,7 @@ void main() {
 			renderer.clear();
 
 			shader.Bind();
-			shader.SetUniform4f("color", r, 0.3f, 0.8f, 1.0f);
+			//shader.SetUniform4f("color", r, 0.3f, 0.8f, 1.0f);
 
 			if (r >= 1)
 				increment = -0.05f;
