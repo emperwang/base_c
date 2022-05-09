@@ -7,6 +7,7 @@
 #include "Render.h"
 #include "VertexBuffer.h"
 #include "IndexBuffer.h"
+#include "VertexArrayBuffer.h"
 
 const char *vertex_shader_source = "#version 330 core \n"
 "layout(location = 0) in vec3 aPos;		\n"
@@ -112,13 +113,12 @@ void main() {
 		1, 2, 3			// second triangle
 	};
 
-	unsigned int  VAO;		// element buffer object
-	GLCall(glGenVertexArrays(1, &VAO));
-	GLCall(glBindVertexArray(VAO));
 	{
+		VertexArrayBuffer Vao;
 		VertexBuffer vbuffer(vertices, sizeof(vertices));
-		GLCall(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0));
-		GLCall(glEnableVertexAttribArray(0));
+		VertexBufferLayout layout;
+		layout.Push<float>(3);
+		Vao.AddBuffer(vbuffer, layout);
 
 		IndexBuffer ibuffer(indices, 6);
 
@@ -132,8 +132,7 @@ void main() {
 			GLCall(glClear(GL_COLOR_BUFFER_BIT));
 
 			GLCall(glUseProgram(shader_program));
-			GLCall(glBindVertexArray(VAO));
-
+			Vao.Bind();
 			GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0));
 
 			GLCall(glfwSwapBuffers(window));
@@ -141,7 +140,6 @@ void main() {
 
 		}
 	}
-	GLCall(glDeleteVertexArrays(1, &VAO));
 	GLCall(glDeleteProgram(shader_program));
 
 	glfwTerminate();
