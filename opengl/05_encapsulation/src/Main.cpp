@@ -80,7 +80,11 @@ void main() {
 
 	// Õý½»¾ØÕó
 	glm::mat4 prj = glm::ortho(-4.0f, 4.0f, -3.0f, 3.0f, -1.0f, 1.0f);
+	glm::vec3 trans = glm::vec3(2.0f, 0.5, 0);
+	glm::mat4 model = glm::translate(glm::mat4(1.0f), trans);
+	glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(-1.0f,0.0f, 0.0f));
 
+	glm::mat4 mvp = prj * view * model;
 	{
 		Shader shader("assets/shader/vertex.vs", "assets/shader/fragment.fs");
 		shader.Bind();
@@ -96,7 +100,8 @@ void main() {
 		Texture texture("assets/picture/container.jpg");
 		texture.Bind();
 		shader.SetUniform1i("tex1", 0);
-		shader.SetUniformMat4f("u_MVP", prj);
+		shader.SetUniformMat4f("u_MVP", mvp);
+
 		GLCall(glPolygonMode(GL_FRONT_AND_BACK, GL_FILL));
 		//GLCall(glPolygonMode(GL_FRONT_AND_BACK, GL_LINE));
 		
@@ -108,7 +113,8 @@ void main() {
 		ImVec4 clearColor = ImVec4(0.45f, 0.55f, 0.60f, 1.0f);
 		while (!glfwWindowShouldClose(window)) {
 			process_input(window);
-
+			model = glm::translate(glm::mat4(1.0f), trans);
+			mvp = prj * view * model;
 			// start ImGui NewFrame
 			ImGui_ImplOpenGL3_NewFrame();
 			ImGui_ImplGlfw_NewFrame();
@@ -121,7 +127,8 @@ void main() {
 				ImGui::Text("This simple useful text");
 
 				ImGui::SliderFloat("float", &f, 1.0f, 100.0f);
-				std::cout << "float f = " << f << std::endl;
+				//std::cout << "float f = " << f << std::endl;
+				ImGui::SliderFloat3("Model", &trans.x, -4.0f, 4.0);
 
 				ImGui::ColorEdit3("clearColor", (float*)&clearColor);
 
@@ -130,7 +137,7 @@ void main() {
 			renderer.clear(clearColor.x, clearColor.y, clearColor.z, clearColor.w);
 
 			shader.Bind();
-			shader.SetUniformMat4f("u_MVP", prj);
+			shader.SetUniformMat4f("u_MVP", mvp);
 			renderer.Draw(Vao, ibuffer, shader);
 			ImGui::Render();
 			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
