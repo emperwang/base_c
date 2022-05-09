@@ -3,7 +3,7 @@
 #include <GLFW/glfw3.h>
 #include <stb_image.h>
 #include <iostream>
-
+#include <cmath>
 #include "Render.h"
 #include "VertexBuffer.h"
 #include "IndexBuffer.h"
@@ -51,29 +51,44 @@ void main() {
 		0, 1, 3,		// first triangle
 		1, 2, 3			// second triangle
 	};
-
+	glfwSwapInterval(1);
 	{
 		Shader shader("assets/shader/vertex.vs", "assets/shader/fragment.fs");
+		shader.Bind();
 		VertexArrayBuffer Vao;
 		VertexBuffer vbuffer(vertices, sizeof(vertices));
 		VertexBufferLayout layout;
 		layout.Push<float>(3);
 		Vao.AddBuffer(vbuffer, layout);
-
+		shader.SetUniform4f("color", 0.8f, 0.3f, 0.8f, 1.0f);
 		IndexBuffer ibuffer(indices, 6);
 
-		//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		GLCall(glPolygonMode(GL_FRONT_AND_BACK, GL_LINE));
+		GLCall(glPolygonMode(GL_FRONT_AND_BACK, GL_FILL));
+		//GLCall(glPolygonMode(GL_FRONT_AND_BACK, GL_LINE));
+		
+		ibuffer.unBind();
+		Vao.Unbind();
+		shader.Unbind();
 
+		float r=0.8;
+		float increment = 0.05;
 		while (!glfwWindowShouldClose(window)) {
 			process_input(window);
 
 			GLCall(glClearColor(0.2f, 0.3f, 0.3f, 1.0f));
 			GLCall(glClear(GL_COLOR_BUFFER_BIT));
-
-			shader.Bind();
-			//GLCall(glUseProgram(shader_program));
 			Vao.Bind();
+			ibuffer.Bind();
+			shader.Bind();
+			if (r >= 1)
+				increment = -0.05f;
+			if (r <= 0)
+			{
+				increment = 0.05f;
+			}
+			shader.SetUniform4f("color", r, 0.3f, 0.8f, 1.0f);
+			r += increment;
+
 			GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0));
 
 			GLCall(glfwSwapBuffers(window));
