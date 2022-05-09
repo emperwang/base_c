@@ -18,6 +18,8 @@
 #include "backends/imgui_impl_glfw.h"
 #include "backends/imgui_impl_opengl3.h"
 
+#include "test/TestClearColor.h"
+
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 
 void process_input(GLFWwindow *window);
@@ -109,6 +111,8 @@ void main() {
 		Vao.Unbind();
 		shader.Unbind();
 
+		TkTest::TestClearColor testColor;
+
 		Renderer renderer;
 		ImVec4 clearColor = ImVec4(0.45f, 0.55f, 0.60f, 1.0f);
 		while (!glfwWindowShouldClose(window)) {
@@ -119,7 +123,7 @@ void main() {
 			ImGui_ImplOpenGL3_NewFrame();
 			ImGui_ImplGlfw_NewFrame();
 			ImGui::NewFrame();
-
+			testColor.OnRender();
 			{
 				static float f = 0.0f;
 				// show simple window
@@ -134,8 +138,9 @@ void main() {
 
 				ImGui::End();
 			}
-			renderer.clear(clearColor.x, clearColor.y, clearColor.z, clearColor.w);
+			//renderer.clear(clearColor.x, clearColor.y, clearColor.z, clearColor.w);
 
+			testColor.OnImGuiRender();
 			shader.Bind();
 			shader.SetUniformMat4f("u_MVP", mvp);
 			renderer.Draw(Vao, ibuffer, shader);
