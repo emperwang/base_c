@@ -68,11 +68,8 @@ namespace TkTest
 
 	void TestMoveModel::OnImGuiRender()
 	{
-		ImGui::Begin("Model Move");
 		ImGui::Text("This simple useful text");
 		ImGui::SliderFloat3("Model", &trans.x, -4.0f, 4.0);
-
-		ImGui::End();
 	}
 
 }

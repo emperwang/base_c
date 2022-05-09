@@ -47,7 +47,14 @@ void main()
 		//GLCall(glPolygonMode(GL_FRONT_AND_BACK, GL_LINE));
 
 		//TkTest::TestClearColor testColor;
-		TkTest::TestMoveModel testMoveModel;
+		//TkTest::TestMoveModel testMoveModel;
+		
+		TkTest::Test* currentTest = nullptr;
+		TkTest::TestMenu* testMenu = new TkTest::TestMenu(currentTest);
+		currentTest = testMenu;
+
+		testMenu->RegisterTest<TkTest::TestClearColor>("clear color");
+		testMenu->RegisterTest<TkTest::TestMoveModel>("move model");
 
 		while (!glfwWindowShouldClose(window)) {
 			process_input(window);
@@ -58,9 +65,23 @@ void main()
 
 			//testColor.OnRender();
 			//testColor.OnImGuiRender();
-			testMoveModel.OnRender();
-			testMoveModel.OnImGuiRender();
+			//testMoveModel.OnRender();
+			//testMoveModel.OnImGuiRender();
 
+			if (currentTest)
+			{
+				currentTest->OnUpdate(0.0f);
+				currentTest->OnRender();
+
+				ImGui::Begin("Test");
+				if (currentTest != testMenu && ImGui::Button("<-"))
+				{
+					delete currentTest;
+					currentTest = testMenu;
+				}
+				currentTest->OnImGuiRender();
+				ImGui::End();
+			}
 
 			ImGui::Render();
 			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
