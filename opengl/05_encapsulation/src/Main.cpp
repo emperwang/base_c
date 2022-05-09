@@ -9,6 +9,7 @@
 #include "IndexBuffer.h"
 #include "VertexArrayBuffer.h"
 #include "Shader.h"
+#include "Texture.h"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 
@@ -41,10 +42,11 @@ void main() {
 	}
 	//glViewport(0, 0, 800, 600);
 	float vertices[] = {
-		0.5f, 0.5f, 0.0f,		// top right
-		0.5f, -0.5f, 0.0f,		// bottom right
-		-0.5f,-0.5f, 0.0f,		// bottom left
-		-0.5f, 0.5f, 0.0f		// top left
+		// point			// textureCoords
+		0.5f, 0.5f, 0.0f,	1.0f, 1.0f,	// top right
+		0.5f, -0.5f, 0.0f,	1.0f, 0.0f,	// bottom right
+		-0.5f,-0.5f, 0.0f,	0.0f, 0.0f,	// bottom left
+		-0.5f, 0.5f, 0.0f,	0.0f, 1.0f	// top left
 	};
 
 	unsigned int indices[] = {
@@ -52,6 +54,11 @@ void main() {
 		1, 2, 3			// second triangle
 	};
 	glfwSwapInterval(1);
+
+	// enable blend
+	GLCall(glEnable(GL_BLEND));
+	GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
+
 	{
 		Shader shader("assets/shader/vertex.vs", "assets/shader/fragment.fs");
 		shader.Bind();
@@ -59,9 +66,14 @@ void main() {
 		VertexBuffer vbuffer(vertices, sizeof(vertices));
 		VertexBufferLayout layout;
 		layout.Push<float>(3);
+		layout.Push<float>(2);
 		Vao.AddBuffer(vbuffer, layout);
 		shader.SetUniform4f("color", 0.8f, 0.3f, 0.8f, 1.0f);
 		IndexBuffer ibuffer(indices, 6);
+
+		Texture texture("assets/picture/container.jpg");
+		texture.Bind();
+		shader.SetUniform1i("tex1", 0);
 
 		GLCall(glPolygonMode(GL_FRONT_AND_BACK, GL_FILL));
 		//GLCall(glPolygonMode(GL_FRONT_AND_BACK, GL_LINE));
