@@ -70,27 +70,27 @@ void main() {
 		Vao.Unbind();
 		shader.Unbind();
 
+		Renderer renderer;
+
 		float r=0.8;
 		float increment = 0.05;
 		while (!glfwWindowShouldClose(window)) {
 			process_input(window);
 
-			GLCall(glClearColor(0.2f, 0.3f, 0.3f, 1.0f));
-			GLCall(glClear(GL_COLOR_BUFFER_BIT));
-			Vao.Bind();
-			ibuffer.Bind();
+			renderer.clear();
+
 			shader.Bind();
+			shader.SetUniform4f("color", r, 0.3f, 0.8f, 1.0f);
+
 			if (r >= 1)
 				increment = -0.05f;
 			if (r <= 0)
 			{
 				increment = 0.05f;
 			}
-			shader.SetUniform4f("color", r, 0.3f, 0.8f, 1.0f);
 			r += increment;
 
-			GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0));
-
+			renderer.Draw(Vao, ibuffer, shader);
 			GLCall(glfwSwapBuffers(window));
 			GLCall(glfwPollEvents());
 		}
