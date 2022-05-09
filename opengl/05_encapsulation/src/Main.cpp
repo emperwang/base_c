@@ -14,6 +14,10 @@
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 
+#include "imgui.h"
+#include "backends/imgui_impl_glfw.h"
+#include "backends/imgui_impl_opengl3.h"
+
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 
 void process_input(GLFWwindow *window);
@@ -62,6 +66,18 @@ void main() {
 	GLCall(glEnable(GL_BLEND));
 	GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 
+	// setup ImGui
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGuiIO& io = ImGui::GetIO(); (void)io;
+
+	ImGui::StyleColorsDark();
+
+	//SetUp Platform/Renderer back ends
+	ImGui_ImplGlfw_InitForOpenGL(window, true);
+	const char* glsl_version = "#version 130";
+	ImGui_ImplOpenGL3_Init(glsl_version);
+
 	// Õý½»¾ØÕó
 	glm::mat4 prj = glm::ortho(-4.0f, 4.0f, -3.0f, 3.0f, -1.0f, 1.0f);
 
@@ -89,31 +105,44 @@ void main() {
 		shader.Unbind();
 
 		Renderer renderer;
-
-		float r=0.8;
-		float increment = 0.05;
+		ImVec4 clearColor = ImVec4(0.45f, 0.55f, 0.60f, 1.0f);
 		while (!glfwWindowShouldClose(window)) {
 			process_input(window);
 
+			// start ImGui NewFrame
+			ImGui_ImplOpenGL3_NewFrame();
+			ImGui_ImplGlfw_NewFrame();
+			ImGui::NewFrame();
+
+			{
+				static float f = 0.0f;
+				// show simple window
+				ImGui::Begin("Hello ImGui");
+				ImGui::Text("This simple useful text");
+
+				ImGui::SliderFloat("float", &f, 1.0f, 100.0f);
+				ImGui::ColorEdit3("clearColor", (float*)&clearColor);
+
+				ImGui::End();
+			}
 			renderer.clear();
 
 			shader.Bind();
-			//shader.SetUniform4f("color", r, 0.3f, 0.8f, 1.0f);
 			shader.SetUniformMat4f("u_MVP", prj);
-			if (r >= 1)
-				increment = -0.05f;
-			if (r <= 0)
-			{
-				increment = 0.05f;
-			}
-			r += increment;
-
 			renderer.Draw(Vao, ibuffer, shader);
+			ImGui::Render();
+			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
 			GLCall(glfwSwapBuffers(window));
 			GLCall(glfwPollEvents());
 		}
 	}
 
+	ImGui_ImplOpenGL3_Shutdown();
+	ImGui_ImplGlfw_Shutdown();
+	ImGui::DestroyContext();
+
+	glfwDestroyWindow(window);
 	glfwTerminate();
 	return;
 }

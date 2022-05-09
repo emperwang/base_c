@@ -18,13 +18,15 @@ project "05_encapsulation"
 		"%{IncludeDir.GLFW}",
 		"%{IncludeDir.glad}",
 		"%{IncludeDir.stb}",
-		"%{IncludeDir.glm}"
+		"%{IncludeDir.glm}",
+		"%{IncludeDir.ImGui}"
 	}
 
 	links
 	{
 		"GLFW",
 		"glad33",
+		"ImGui",
 		"opengl32.lib"
 	}
 
