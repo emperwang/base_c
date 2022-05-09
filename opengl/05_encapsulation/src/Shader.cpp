@@ -34,11 +34,17 @@ void Shader::SetUniform4f(const std::string& name, float v0, float v1, float v2,
 
 int Shader::GetUniformLocation(const std::string& name)
 {
+	if (this->m_unformLocationCache.find(name) != m_unformLocationCache.end())
+	{
+		return m_unformLocationCache[name];
+	}
+
 	GLCall(int location = glGetUniformLocation(m_RenderId, name.c_str()));
 	if (location == -1)
 	{
 		std::cout << "Error: invalid " << name << " Location: " << location << std::endl;
 	}
+	m_unformLocationCache[name] = location;
 	return location;
 }
 
