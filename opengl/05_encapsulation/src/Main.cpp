@@ -11,6 +11,9 @@
 #include "Shader.h"
 #include "Texture.h"
 
+#include "glm/glm.hpp"
+#include "glm/gtc/matrix_transform.hpp"
+
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 
 void process_input(GLFWwindow *window);
@@ -59,6 +62,9 @@ void main() {
 	GLCall(glEnable(GL_BLEND));
 	GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 
+	// Õý½»¾ØÕó
+	glm::mat4 prj = glm::ortho(-4.0f, 4.0f, -3.0f, 3.0f, -1.0f, 1.0f);
+
 	{
 		Shader shader("assets/shader/vertex.vs", "assets/shader/fragment.fs");
 		shader.Bind();
@@ -74,7 +80,7 @@ void main() {
 		Texture texture("assets/picture/container.jpg");
 		texture.Bind();
 		shader.SetUniform1i("tex1", 0);
-
+		shader.SetUniformMat4f("u_MVP", prj);
 		GLCall(glPolygonMode(GL_FRONT_AND_BACK, GL_FILL));
 		//GLCall(glPolygonMode(GL_FRONT_AND_BACK, GL_LINE));
 		
@@ -93,7 +99,7 @@ void main() {
 
 			shader.Bind();
 			//shader.SetUniform4f("color", r, 0.3f, 0.8f, 1.0f);
-
+			shader.SetUniformMat4f("u_MVP", prj);
 			if (r >= 1)
 				increment = -0.05f;
 			if (r <= 0)

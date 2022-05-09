@@ -17,7 +17,8 @@ project "05_encapsulation"
 		"src",
 		"%{IncludeDir.GLFW}",
 		"%{IncludeDir.glad}",
-		"%{IncludeDir.stb}"
+		"%{IncludeDir.stb}",
+		"%{IncludeDir.glm}"
 	}
 
 	links
