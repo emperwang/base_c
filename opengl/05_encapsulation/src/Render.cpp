@@ -29,6 +29,12 @@ void Renderer::clear() const
 	GLCall(glClear(GL_COLOR_BUFFER_BIT));
 }
 
+void Renderer::clear(const float r, const float g, const float b, const float alpha) const
+{
+	GLCall(glClearColor(r, g, b, alpha));
+	GLCall(glClear(GL_COLOR_BUFFER_BIT));
+}
+
 void Renderer::Draw(VertexArrayBuffer& Vao, IndexBuffer& ibuffer, Shader& shader) const
 {
 	Vao.Bind();

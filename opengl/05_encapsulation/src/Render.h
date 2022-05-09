@@ -23,6 +23,7 @@ public:
 	~Renderer(){}
 
 	void clear() const;
+	void clear(const float r, const float g, const float b, const float alpha) const;
 
 	void Draw(VertexArrayBuffer& Vao, IndexBuffer& ibuffer, Shader& shader) const;
 };

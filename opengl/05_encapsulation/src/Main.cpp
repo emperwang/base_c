@@ -121,11 +121,13 @@ void main() {
 				ImGui::Text("This simple useful text");
 
 				ImGui::SliderFloat("float", &f, 1.0f, 100.0f);
+				std::cout << "float f = " << f << std::endl;
+
 				ImGui::ColorEdit3("clearColor", (float*)&clearColor);
 
 				ImGui::End();
 			}
-			renderer.clear();
+			renderer.clear(clearColor.x, clearColor.y, clearColor.z, clearColor.w);
 
 			shader.Bind();
 			shader.SetUniformMat4f("u_MVP", prj);
