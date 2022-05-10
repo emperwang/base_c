@@ -6,6 +6,8 @@
 #include "VertexArrayBuffer.h"
 #include "Texture.h"
 #include "Render.h"
+#include <memory>
+
 namespace TkTest {
 
 	class TestMoveModel :public Test
@@ -27,11 +29,11 @@ namespace TkTest {
 		glm::mat4 model;
 		glm::mat4 view;
 		glm::mat4 mvp;
-		IndexBuffer ibuffer;
-		Shader shader;
-		VertexArrayBuffer vao;
-		Texture texture;
-		VertexBuffer vbuffer;
-		Renderer renderer;
+		std::unique_ptr<IndexBuffer> ibuffer;
+		std::unique_ptr<Shader> shader;
+		std::unique_ptr<VertexArrayBuffer> vao;
+		std::unique_ptr<Texture> texture;
+		std::unique_ptr<VertexBuffer> vbuffer;
+		std::unique_ptr<Renderer> renderer;
 	};
 }

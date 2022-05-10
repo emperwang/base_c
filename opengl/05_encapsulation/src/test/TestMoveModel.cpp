@@ -20,8 +20,7 @@ namespace TkTest
 	};
 
 	TestMoveModel::TestMoveModel():prj(glm::mat4(1.0)), trans(glm::vec3(1.0)), model(glm::mat4(1.0)), view(glm::mat4(1.0)),
-		mvp(glm::mat4(1.0)), ibuffer(indices, 6), shader("assets/shader/vertex.vs", "assets/shader/fragment.fs"),
-		texture("assets/picture/container.jpg"), vbuffer(vertices, sizeof(vertices))
+		mvp(glm::mat4(1.0))
 	{
 		prj = glm::ortho(-4.0f, 4.0f, -3.0f, 3.0f, -1.0f, 1.0f);
 		trans = glm::vec3(2.0f, 0.5, 0);
@@ -29,17 +28,20 @@ namespace TkTest
 		view = glm::translate(glm::mat4(1.0f), glm::vec3(-1.0f, 0.0f, 0.0f));
 		mvp = prj * view * model;
 
+		ibuffer = std::make_unique<IndexBuffer>(indices, 6);
+		shader = std::make_unique<Shader>("assets/shader/vertex.vs", "assets/shader/fragment.fs");
+		texture = std::make_unique<Texture>("assets/picture/container.jpg");
+		renderer = std::make_unique<Renderer>();
+		vao = std::make_unique<VertexArrayBuffer>();
+		vbuffer = std::make_unique<VertexBuffer>(vertices, sizeof(vertices));
 		// ------------------
-		shader.Bind();
-		//VertexBuffer vbuffer(vertices, sizeof(vertices));
+		shader->Bind();
+		shader->SetUniform1i("tex1", 0);
+		shader->SetUniformMat4f("u_MVP", mvp);
 		VertexBufferLayout layout;
 		layout.Push<float>(3);
 		layout.Push<float>(2);
-		vao.AddBuffer(vbuffer, layout);
-
-		texture.Bind();
-		shader.SetUniform1i("tex1", 0);
-		shader.SetUniformMat4f("u_MVP", mvp);
+		vao->AddBuffer(*vbuffer, layout);
 	}
 
 	TestMoveModel::~TestMoveModel()
@@ -54,16 +56,16 @@ namespace TkTest
 
 	void TestMoveModel::OnRender()
 	{
-		renderer.clear();
+		renderer->clear();
 		model = glm::translate(glm::mat4(1.0f), trans);
 		mvp = prj * view * model;
-		vbuffer.Bind();
-		texture.Bind();
-		ibuffer.Bind();
-		vao.Bind();
-		shader.Bind();
-		shader.SetUniformMat4f("u_MVP", mvp);
-		renderer.Draw(vao, ibuffer, shader);
+		vbuffer->Bind();
+		texture->Bind();
+		ibuffer->Bind();
+		vao->Bind();
+		shader->Bind();
+		shader->SetUniformMat4f("u_MVP", mvp);
+		renderer->Draw(*vao, *ibuffer, *shader);
 	}
 
 	void TestMoveModel::OnImGuiRender()
