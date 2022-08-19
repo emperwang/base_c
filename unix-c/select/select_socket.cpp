@@ -9,24 +9,24 @@
 #include <iostream>
 #include <errno.h>
 #include <string.h>
-
 #define INVALIDE_FD -1
-/*    nc [option] host port
- * test command:  nc  127.0.0.1 10000    // connect to server
- *
- *
- *
- */
-// use c++, because i want to use STD library.
-int main(int argc, char *argv[])
+
+int listenfd;
+int* initialize()
 {
-    // create a new socket
-    int listenfd = socket(AF_INET, SOCK_STREAM, 0);
+     // create a new socket
+     listenfd = socket(AF_INET, SOCK_STREAM, 0);
     if(listenfd == INVALIDE_FD)
     {
         std::cout<<("create listen socket failed.") << std::endl;
-        return -1;
+        return NULL;
     }
+
+    return &listenfd;
+}
+
+int bindaddr()
+{
     /*
     struct sockaddr_in
     {
@@ -57,9 +57,14 @@ int main(int argc, char *argv[])
     if(bind(listenfd, (struct sockaddr *)&bindaddr, sizeof(bindaddr)) == -1)
     {
         std::cout<< "bind listenfd failed. errno: "<< errno << std::endl;
-        close(listenfd);
+        close((listenfd));
         return -1;
     }
+    return 0;
+}
+
+int listensocket()
+{
 
     // start listen
     if(listen(listenfd, SOMAXCONN) == -1)
@@ -69,33 +74,64 @@ int main(int argc, char *argv[])
         return -1;
     }
 
+    return 0;
+}
+
+void setreadset(fd_set& readset,int& maxfd, std::vector<int>& clientfds)
+{
+    FD_ZERO(&readset);
+
+    // set listenfd into readset
+    FD_SET((listenfd), &readset);
+
+
+
+    // add clientfd into readset
+    for(int i=0; i< clientfds.size(); i++)
+    {
+        if(clientfds[i] != INVALIDE_FD)
+        {
+            FD_SET(clientfds[i], &readset);
+
+            if(maxfd < clientfds[i])
+            {
+                maxfd = clientfds[i];
+            }
+        }
+    }
+}
+
+/*    nc [option] host port
+ * test command:  nc  127.0.0.1 10000    // connect to server
+ */
+// use c++, because i want to use STD library.
+int main(int argc, char *argv[])
+{
+   int* listenfd = initialize();
+   if(listenfd == NULL)
+   {
+        std::cout << "create listen socket failed. errno " << errno <<std::endl;
+        return -1;
+   }
+
+    if(bindaddr() < 0)
+    {
+        return -1;
+    }
+
+    if(listensocket() < 0)
+    {
+        return -1;
+    }
+
     // storage receive client key
     std::vector<int> clientfds;
     int maxfd;
+    maxfd = (*listenfd);
     while(true)
     {
         fd_set readset;
-        FD_ZERO(&readset);
-
-        // set listenfd into readset
-        FD_SET(listenfd, &readset);
-
-        maxfd = listenfd;
-
-        // add clientfd into readset
-        for(int i=0; i< clientfds.size(); i++)
-        {
-            if(clientfds[i] != INVALIDE_FD)
-            {
-                FD_SET(clientfds[i], &readset);
-
-                if(maxfd < clientfds[i])
-                {
-                    maxfd = clientfds[i];
-                }
-            }
-        }
-
+        setreadset(readset, maxfd,clientfds);
         timeval tm;
         tm.tv_sec = 1;
         tm.tv_usec = 0;
@@ -114,12 +150,12 @@ int main(int argc, char *argv[])
             continue;
         }else {
             // receive read event, socket event
-            if(FD_ISSET(listenfd, &readset))
+            if(FD_ISSET(*listenfd, &readset))
             {
                 struct sockaddr_in  clientaddr;
                 socklen_t addrlen = sizeof(clientaddr);
                 // receive client
-                int clientfd = accept(listenfd,(struct sockaddr *)&clientaddr,&addrlen);
+                int clientfd = accept(*listenfd,(struct sockaddr *)&clientaddr,&addrlen);
                 if(clientfd == INVALIDE_FD)
                 {
                     // reiceve socket error
@@ -157,7 +193,6 @@ int main(int argc, char *argv[])
     }
 
     // close all socket
-
     for (int i= 0; i< clientfds.size(); i++)
     {
         if(clientfds[i] != INVALIDE_FD)
@@ -166,7 +201,7 @@ int main(int argc, char *argv[])
         }
     }
 
-    close(listenfd);
+    close((*listenfd));
     return 0;
 }
 
