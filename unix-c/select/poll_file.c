@@ -24,7 +24,7 @@ int main(int argc, char *argv[]){
 	ret = 0;
 	fds[0].fd = 0;
 	fds[1].fd = fd;
-	
+
 	// 普通 或  优先级数据可读
 	fds[0].events = POLLIN;
 	fds[1].events = POLLIN;

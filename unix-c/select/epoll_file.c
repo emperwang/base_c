@@ -34,6 +34,21 @@ int main(int argc, char *argv[]){
 	// 注册标准输入
 	event.data.fd = 0;
 	event.events = EPOLLIN;
+	/*
+	* int epoll_ctl(int epfd, int op, int fd, struct epoll_event *event);
+	* op: EPOLL_CTL_ADD  EPOLL_CTL_MOD  EPOLL_CTL_DEL
+	*  typedef union epoll_data {
+               void        *ptr;
+               int          fd;
+               uint32_t     u32;
+               uint64_t     u64;
+           } epoll_data_t;
+
+           struct epoll_event {
+               uint32_t     events;      // Epoll events 
+               epoll_data_t data;        // User data variable 
+           };
+	*/
 	ret = epoll_ctl(epfd, EPOLL_CTL_ADD, 0, &event);
 	if(-1 == ret){
 		perror("epoll_ctl");
@@ -51,7 +66,7 @@ int main(int argc, char *argv[]){
 
 	ret = 0;
 	while(1){
-		
+
 		// 监控并等待多个文件描述符属性变化(是否可读)
 		// 没有属性变化，这个函数会阻塞，直到有变化才往下执行，这里没有设置超时
 		ret = epoll_wait(epfd, &wait_event, 2, -1);

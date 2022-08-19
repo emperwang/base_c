@@ -7,7 +7,7 @@
 #include <string.h>
 
 int main(int argc, char *argv[]){
-	
+
 	int ret;
 	ret = mkfifo("test_fifo",0666);
 	if(ret != 0){
