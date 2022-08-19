@@ -1,4 +1,4 @@
-#include <sys/types.h>          /* See NOTES */
+#include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/time.h>
 #include <sys/types.h>
@@ -139,6 +139,7 @@ int main(int argc, char *argv[])
         // error
         if(ret == -1)
         {
+            // interrupt by single
             if(errno != EINTR)
             {
                 break;
