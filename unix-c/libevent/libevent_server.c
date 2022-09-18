@@ -7,6 +7,7 @@
 #include <event.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#include <signal.h>
 
 int Socket(struct sockaddr* addr)
 {
@@ -30,6 +31,16 @@ void Listen(int lfd)
         perror("listener fd error.\n");
         _exit(-1);
     }
+}
+
+void timer_ont_time_cb(evutil_socket_t fd, short events, void *arg)
+{
+    printf("ont time timer callback, fd: %d, events: 0x%x\n", fd, events);
+}
+
+void timer_cb(evutil_socket_t fd, short events, void *arg)
+{
+    printf("timer callback, fd: %d, events: 0x%x\n", fd, events);
 }
 
 void client_read_write_cb(evutil_socket_t cfd, short events, void *arg)
@@ -73,6 +84,17 @@ void listencb(evutil_socket_t lfd, short events, void *arg)
     }
 }
 
+
+static void signal_event_cb(evutil_socket_t fd, short events, void *arg)
+{
+    struct event* signal = (struct event*) arg;
+    printf("signal event callback, fd: %d, events: 0x%x\n", fd, events);
+    printf("signal callback, got signal: %d\n", event_get_signal(signal));
+
+    // delete signal
+    //event_del(signal);
+}
+
 int main()
 {
     setbuf(stdout, NULL);
@@ -111,11 +133,29 @@ int main()
         perror("add event failed. \n");
         _exit(-2);
     }
+
+    // add timer event -- just for one time  event
+    struct event *timeev = evtimer_new(base, timer_ont_time_cb, NULL);
+    struct timeval timeout;
+    timeout.tv_sec = 1;
+    timeout.tv_usec = 0;
+    evtimer_add(timeev,&timeout);
+
+    // make time event persist
+    struct event *timeevent = evtimer_new(base, timer_cb, NULL);
+    event_assign(timeevent, base,-1, EV_PERSIST, timer_cb, NULL);
+    event_add(timeevent,&timeout);
+
+
+    // singal event
+    // use myself as parameter
+    struct event* signalev = evsignal_new(base,SIGINT,signal_event_cb,event_self_cbarg());
+    event_add(signalev,NULL);
+
     // event_loop
     printf("server started\n");
     event_base_dispatch(base);
     // free resources
-
     close(lfd);
     event_base_free(base);
 
