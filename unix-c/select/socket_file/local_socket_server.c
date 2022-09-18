@@ -57,6 +57,7 @@ int main(int argc, char *argv[])
         sleep(1);
     }
 
+    close(lfd);
     return 0;
 }
 
