@@ -8,6 +8,7 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <signal.h>
+#include <string.h>
 
 int Socket(struct sockaddr* addr)
 {
@@ -69,6 +70,7 @@ void client_read_write_cb(evutil_socket_t cfd, short events, void *arg)
 void listencb(evutil_socket_t lfd, short events, void *arg)
 {
     struct sockaddr_in addr;
+    memset(&addr, 0, sizeof(addr));
     socklen_t len = sizeof(addr);
     // 提取 客户端fd
     int cfd  = accept(lfd, (struct sockaddr *)&addr, &len);
@@ -149,7 +151,7 @@ int main()
 
     // singal event
     // use myself as parameter
-    struct event* signalev = evsignal_new(base,SIGINT,signal_event_cb,event_self_cbarg());
+    struct event* signalev = evsignal_new(base,SIGUSR2,signal_event_cb,event_self_cbarg());
     event_add(signalev,NULL);
 
     // event_loop
