@@ -9,7 +9,7 @@ int main(){
 	printf("%s \n", tmpnam(NULL));
 	// tmp file
 	tmpnam(name);
-	
+
 	if((fp = tmpfile()) == NULL){
 		perror("tempfile error");
 	}
@@ -17,7 +17,7 @@ int main(){
 	fputs("one line if output\n",fp);
 	// read back
 	rewind(fp);
-	
+
 	if(fgets(line, sizeof(line), fp) == NULL){
 		perror("fgets error");
 	}

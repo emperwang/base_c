@@ -5,7 +5,7 @@
 
 // 打印时间
 void print_tm(struct tm *t){
-	
+
 	printf("tm_isdst: %d \n",t->tm_isdst);
 	printf("tm_yday: %d \n",t->tm_yday);
 	printf("tm_wday: %d \n",t->tm_wday);
@@ -24,15 +24,15 @@ void print_tm(struct tm *t){
  * 获取时间 并打印
  */
 int main(){
-	
+
 	time_t ptr ;
 	// 获取时间，ptr为一个 1970 到现在的秒值
 	time(&ptr);
 	printf("%lu \n",ptr);
-	
+
 	struct tm *ttm;
 	ttm = localtime(&ptr);
-	
+
 	print_tm(ttm);
 
 

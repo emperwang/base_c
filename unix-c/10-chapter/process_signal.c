@@ -28,7 +28,7 @@ int main(){
 
 
 static void sig_usr(int signo){
-	
+
 	if(signo == SIGUSR1){
 		printf("received SIGUSR1\n");
 	}else if(signo == SIGUSR2){

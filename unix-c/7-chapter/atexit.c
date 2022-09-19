@@ -21,7 +21,7 @@ int main(){
 }
 
 static void my_exit1(void){
-	
+
 	printf("first exit handler, exit1\n");
 }
 

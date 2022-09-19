@@ -14,7 +14,7 @@ void pr_mask(const char *str){
 		perror("sigprocmask error");
 	}else {
 		printf("%s", str);
-		
+
 		if(sigismember(&sigset, SIGINT)){
 			printf(" SIGINT");
 		}

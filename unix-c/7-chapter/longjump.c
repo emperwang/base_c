@@ -11,7 +11,7 @@ static int globval;
 
 /**
  * 查看 longjump对自动变量，全局变量， 寄存器变量等的影响
- * 
+ *
  */
 
 int main(){
@@ -39,11 +39,11 @@ int main(){
 	regival = 97;
 	volaval = 98;
 	statval = 99;
-	
+
 	f1(autoval, regival,volaval,statval );
 	exit(0);
 }
-	
+
 static void f1(int i, int j, int k, int l){
 	printf("in f1()\n");
 	printf("global =%d, autoval=%d,regival=%d, volaval=%d, statval=%d\n",globval,i,j,k,l);

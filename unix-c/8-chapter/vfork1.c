@@ -21,7 +21,7 @@ int main(){
 		globval++;
 		var++;
 		_exit(0);
-	} 
+	}
 	// parent
 	printf("pid=%d, glob=%d, var=%d\n", getpid(), globval,var);
 

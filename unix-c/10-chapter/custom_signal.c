@@ -7,7 +7,7 @@
 volatile sig_atomic_t quitflag;
 
 static void sig_int(int signo){
-	
+
 	if(signo == SIGINT){
 		printf("\n Interrupt\n");
 	}else if (signo == SIGQUIT){
@@ -16,12 +16,12 @@ static void sig_int(int signo){
 }
 
 int main(){
-	
+
 	sigset_t newmask, oldmask,zeromask;
 	if(signal(SIGINT, sig_int) == SIG_ERR){
 		perror("signal(SIGINT) error");
 	}
-	
+
 	if(signal(SIGQUIT, sig_int) == SIG_ERR){
 		perror("signal(SIGQUIT) error");
 	}
@@ -38,7 +38,7 @@ int main(){
 	while(quitflag == 0){
 		sigsuspend(&zeromask);
 	}
-	
+
 	quitflag = 0;
 	// reset signal mask
 	if(sigprocmask(SIG_SETMASK, &oldmask, NULL) < 0){

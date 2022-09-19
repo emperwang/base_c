@@ -17,7 +17,7 @@ int main(){
 		perror("write to console error");
 	}
 	printf("before fork\n");
-	
+
 	if((pid = fork()) < 0){
 		perror("fork error");
 	}else if(pid == 0){

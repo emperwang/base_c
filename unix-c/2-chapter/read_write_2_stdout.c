@@ -6,7 +6,7 @@
  *从终端中读取数据并写入到终端
  */
 int main(){
-	
+
 	int n;
 	char buf[SIZE];
 
@@ -15,7 +15,7 @@ int main(){
 			perror("write error");
 		}
 	}
-	
+
 	if(n <0){
 		perror("read error");
 	}

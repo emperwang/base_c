@@ -16,7 +16,6 @@ void pr_mask(const char *str){
 		perror("sigprocmask error");
 	}else {
 		printf("%s", str);
-		
 		if(sigismember(&sigset, SIGINT)){
 			printf("  SIGINT");
 		}
@@ -39,11 +38,10 @@ void pr_mask(const char *str){
 
 // 保存临界区代码  不受信号的干扰
 int main(){
-	
 	sigset_t newmask, oldmask, waitmask;
 
 	pr_mask("program start:");
-	
+
 	if(signal(SIGINT, sig_int) == SIG_ERR){
 		perror("signal(SIGINT) error");
 	}

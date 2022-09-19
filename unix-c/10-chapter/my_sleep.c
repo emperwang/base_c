@@ -11,7 +11,7 @@ static void sig_alrm(int signo){
 
 // 自定义睡眠函数
 unsigned int sleep1(unsigned int seconds){
-	
+
 	if(signal(SIGALRM, sig_alrm) == SIG_ERR){
 		return seconds;
 	}
@@ -24,12 +24,11 @@ unsigned int sleep1(unsigned int seconds){
 int main(){
 
 	int i;
-	
+
 	int ret;
 
 	for(i=0; i<10; i++){
-		
-		
+
 		ret = sleep1(2);
 		printf("%d\n", ret);
 	}

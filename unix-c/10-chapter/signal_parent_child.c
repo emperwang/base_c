@@ -12,7 +12,7 @@ static void sig_usr(int signo){
 }
 
 void TELL_WAIT(void){
-	
+
 	if(signal(SIGUSR1,sig_usr) == SIG_ERR){
 		perror("signal(SIGUSR1) error");
 	}

@@ -34,7 +34,7 @@ int main(){
 		perror("wait error\n");
 	}
 	pre_exit(status);
-	
+
 	// 再次创建进程
 	if((pid = fork()) < 0){
 		perror("fork error2");

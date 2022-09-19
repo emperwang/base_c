@@ -15,7 +15,7 @@ unsigned long long count;
 struct timeval end;
 
 void checktime(char *str){
-	
+
 	struct timeval tv;
 
 	gettimeofday(&tv, NULL);
@@ -30,7 +30,7 @@ int main(int argc, char *argv[]){
 	char *s;
 	int nzero, ret;
 	int adj=0;
-	
+
 	setbuf(stdout, NULL);
 
 	#if defined(NZERO)
@@ -40,7 +40,7 @@ int main(int argc, char *argv[]){
 	#else
 		#error NZERO undefined
 	#endif
-	
+
 	printf("NZERO= %d\n", nzero);
 
 	if( argc == 2){

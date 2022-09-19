@@ -2,14 +2,14 @@
 #include <stdlib.h>
 
 void pr_stdio(const char *name, FILE *fp){
-	
+
 	printf("stream = %s ", name);
 
 	if(fp->_flags & _IONBF)
 		printf("unbuffered\n");
 	else if(fp->_flags & _IOLBF)
 		printf("line buffered\n");
-	else 
+	else
 		printf("fully buffered\n");
 
 	//printf(", buffer size =%d\n", fp->buflen);
@@ -35,7 +35,7 @@ int main(){
 	if((fp = fopen("/etc/motd","r")) == NULL){
 			perror("fopen error\n");
 	}
-	
+
 	if(getc(fp) == EOF){
 		perror("getc error\n");
 	}

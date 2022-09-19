@@ -7,7 +7,7 @@ static void sig_quit(int);
 
 
 int main(void){
-	
+
 	sigset_t  newmask, oldmask, pendmask;
 	if(signal(SIGQUIT, sig_quit) == SIG_ERR){
 		perror("can't catch SIGQUIT");

@@ -36,7 +36,7 @@ int main(void){
 		if(read(STDIN_FILENO, &c,1) != -1){
 			printf("read error %d on controlling TTY\n", errno);
 		}
-	}	
+	}
 	exit(0);
 }
 

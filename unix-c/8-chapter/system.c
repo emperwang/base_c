@@ -23,14 +23,14 @@ void pre_exit(int status){
 
 // 使用system调用系统cmd
 int main(){
-	
+
 	int status;
 
 	if((status = system("date")) <0 ){
 		perror("system date error");
 	}
 	pre_exit(status);
-	
+
 	if((status = system("nosuchcommand")) < 0){
 		perror("nosuch command error\n");
 	}

@@ -27,7 +27,7 @@ int main(){
 		doit(RLIMIT_MSGQUEUE);
 
 	#endif
-	
+
 	#ifdef RLIMIT_NICE
 		doit(RLIMIT_NICE);
 
@@ -36,11 +36,11 @@ int main(){
 	#ifdef RLIMIT_NPROC
 		doit(RLIMIT_NPROC);
 	#endif
-	
+
 	#ifdef	RLIMIT_NPTS
 		doit(RLIMIT_NPTS);
 	#endif
-	
+
 	#ifdef	RLIMIT_RSS
 		doit(RLIMIT_RSS);
 	#endif
@@ -58,12 +58,12 @@ int main(){
 	#ifdef RLIMIT_VMEM
 		doit(RLIMIT_VMEM);
 	#endif
-	
+
 	exit(0);
 }
 
 static void pr_limits(char *name, int resource){
-	
+
 	printf("receive name:%s, receive res:%d\n", name, resource);
 
 	struct rlimit limit;
@@ -87,6 +87,6 @@ static void pr_limits(char *name, int resource){
 		lim = limit.rlim_max;
 		printf("%10lld",lim);
 	}
-	
+
 	putchar((int)'\n');
 }

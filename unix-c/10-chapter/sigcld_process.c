@@ -7,7 +7,6 @@
 static void sig_cld(int);
 
 int main(){
-	
 	pid_t pid;
 
 	if(signal(SIGCLD, sig_cld) == SIG_ERR){

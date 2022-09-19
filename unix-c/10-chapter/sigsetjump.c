@@ -21,7 +21,6 @@ void pr_mask(const char *str){
 		perror("sigprocmask error");
 	}else {
 		printf("%s", str);
-		
 		if(sigismember(&sigset, SIGINT)){
 			printf("SIGINT");
 		}
@@ -46,7 +45,6 @@ int main(){
 	if(signal(SIGUSR1, sig_usr1) == SIG_ERR){
 		perror("signal(SIGNUSR1) error");
 	}
-	
 	if(signal(SIGALRM, sig_alrm) == SIG_ERR){
 		perror("signal(SIGALRM) error");
 	}
@@ -57,7 +55,6 @@ int main(){
 		pr_mask("ending main:");
 	}
 	canjump = 1;
-	
 	for(;;){
 		pause();
 	}
@@ -67,12 +64,10 @@ int main(){
 
 static void sig_usr1(int signo){
 	time_t  starttime;
-	
 	if(canjump == 0){
 		return;
 	}
 	pr_mask("starting sig_usr1:");
-	
 	alarm(3);
 	starttime = time(NULL);
 
