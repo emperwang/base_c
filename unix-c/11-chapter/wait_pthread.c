@@ -34,7 +34,7 @@ int main(){
 		printf("can't join thread 1, err=%d\n", err);
 	}
 	printf("thread 1 exit coid %ld\n",(long)tret);
-	
+
 	err = pthread_join(tid2, &tret);
 	if(err != 0){
 		printf("can't join with thread 2, err=%d\n", err);

@@ -39,7 +39,7 @@ int main(){
 	int err;
 	pthread_t tid1, tid2;
 	void *tret;
-	
+
 	err = pthread_create(&tid1, NULL,thr_fn1, (void*)1);
 	if(err != 0){
 		printf("can't create thread 1. err=%d\n", err);
@@ -49,7 +49,7 @@ int main(){
 	if(err != 0){
 		printf("can't create thread 2, err=%d\n", err);
 	}
-	
+
 	err = pthread_join(tid1, &tret);
 	if(err != 0){
 		printf("can't join with thread 1, err=%d\n", err);
@@ -58,7 +58,7 @@ int main(){
 	if(err != 0){
 		printf("can't join with thread 2, err=%d\n", err);
 	}
-	
+
 	printf("thread 2 exit code %ld\n", (long)tret);
 
 	exit(0);

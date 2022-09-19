@@ -8,7 +8,7 @@ struct foo{
 };
 
 void printfoo(const char *s, const struct foo *fp){
-	
+
 	printf("%s ",s);
 	printf(" structure at 0x%lx\n", (unsigned long)fp);
 	printf(" foo.a = %d\n", fp->a);
@@ -33,7 +33,7 @@ int main(void){
 	int err;
 	pthread_t tid1,tid2;
 	struct foo *fp;
-	
+
 	err = pthread_create(&tid1, NULL, thr_fn1, NULL);
 	if(err != 0){
 		printf("can't create thread 1, err=%d\n", err);
