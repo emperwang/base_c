@@ -1,4 +1,4 @@
-project "机房预约系统"
+project "OrderManager"
 	kind "ConsoleApp"
 	language "C++"
 	cppdialect "C++11"
