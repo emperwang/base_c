@@ -1,2 +1,2 @@
-2 zhangsan 2
-1 yanyan 10
+12 zhangsan 1
+13 wangwu 1

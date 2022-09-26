@@ -2,7 +2,7 @@
 #include <stdio.h>
 using namespace std;
 
-int main() {
+int main01() {
 	int a = 4;
 	float b = 4.0;
 	double c = 3.1415926;
