@@ -1,6 +1,7 @@
 #include "aes.h"
 #include "rsa.h"
 #include "md5.h"
+#include "evp.h"
 
 #ifdef  __cplusplus
 extern "C" {
@@ -19,7 +20,8 @@ int main(int argc, char** argv)
 	//generateRSABIO();
 	//RSAEncrypt();
 	//RSAEncryptWithBio();
-	AESEncrypt();
+	//AESEncrypt();
+	aes_256_test();
 
 	return 0;
 }
